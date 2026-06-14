@@ -1,4 +1,4 @@
-# Product Requirements Document (PRD): Termite v1.5 (MVP)
+# Product Requirements Document (PRD): Termite v1.6 (MVP)
 
 Este documento detalla las especificaciones de negocio y requerimientos funcionales para **Termite**, el SaaS vertical de control operativo y financiero diseñado para carpinterías, adaptado específicamente con base en los procesos y datos reales de **Carpintería Escobar** (Zapopan, Jalisco).
 
@@ -16,11 +16,11 @@ El taller sufre de ineficiencias críticas:
 
 ## 2. Visión del Producto: Evolución de Versiones
 
-### Fase 1: MVP (Solo para Carlos)
-El objetivo del MVP es que **únicamente Carlos** tenga el control de su taller desde una aplicación móvil/web. Carlos registrará las cotizaciones, dará seguimiento a las órdenes y controlará el inventario escaneando entradas/salidas.
+### Fase 1: MVP (Solo para Carlos - Web Responsiva)
+El objetivo del MVP es que **únicamente Carlos** tenga el control de su taller desde una aplicación web responsiva (optimizada para móviles). Carlos registrará las cotizaciones, dará seguimiento a las órdenes y controlará el inventario escaneando entradas/salidas con la cámara de su teléfono desde el navegador web.
 
-### Fase 2: Ecosistema Completo (Trabajadores y Clientes)
--   **Portal del Trabajador:** Interfaz ultra-simple para los carpinteros y laqueadores en el taller. 
+### Fase 2: Ecosistema Completo (Trabajadores y Clientes - Web Multi-Rol)
+-   **Portal del Trabajador:** Interfaz web ultra-simple para los carpinteros y laqueadores en el taller. 
     -   Cada estante o contenedor de material (ej. caja de bisagras o rack de MDF) tendrá un código QR físico.
     -   El trabajador lo escanea con la cámara de su celular y presiona un botón gigante de **"Falta Material"**.
     -   Carlos recibe una alerta inmediata en su panel para solicitar compras.
@@ -31,14 +31,12 @@ El objetivo del MVP es que **únicamente Carlos** tenga el control de su taller 
 
 ---
 
-## 3. Requerimientos de Arquitectura de Base de Datos (Supabase)
+## 3. Requerimientos de Arquitectura de Backend (Monolito Laravel)
 
-Para evitar reestructuraciones y deuda técnica al migrar a la Fase 2, la base de datos se modelará con soporte multi-rol desde el Día 1:
--   **Tabla `profiles`:** Vinculada a Supabase `auth.users`, contendrá un campo `role` con los siguientes enums:
-    -   `admin` (Carlos, con acceso total a finanzas, inventarios y hojas viajeras).
-    -   `worker` (Trabajadores del taller, con acceso futuro a escanear QR de faltantes e interactuar con su hoja viajera asignada).
-    -   `client` (Clientes finales, con acceso futuro a ver el catálogo y cotizar).
--   **Row Level Security (RLS):** Las tablas críticas (como `facturas`, `cuentas_por_pagar` y `costos_fijos`) tendrán políticas de seguridad estrictas que restrinjan el acceso de lectura y escritura únicamente a usuarios con el rol `admin`.
+Para maximizar la velocidad de desarrollo y aprovechando que Gael domina el entorno, Termite se construirá como un **Monolito en Laravel (PHP) con base de datos PostgreSQL**:
+-   **Base de datos:** PostgreSQL (alojada en Supabase o servicio administrado).
+-   **Autenticación y Roles:** Gestionado directamente en el backend de Laravel (ej. usando `Laravel Breeze` o `Jetstream`) mediante un campo `role` en la tabla `users` (`admin`, `worker`, `client`).
+-   **Políticas de Acceso:** Controladas en el backend a través de Middlewares y Policies de Laravel para asegurar que solo los usuarios administradores accedan a la información financiera, de facturas y costos fijos.
 
 ---
 
@@ -62,7 +60,7 @@ Para evitar reestructuraciones y deuda técnica al migrar a la Fase 2, la base d
 -   **Semáforo de Margen:** El sistema calcula el costo real sumando la mano de obra estimada, indirectos y el costo actual de los materiales (ej. MDF 15mm Maple a $792, MDF 6mm a $209). Si el margen de ganancia baja del 35%, el sistema marca el producto en **Amarillo/Rojo** en el catálogo privado de Carlos.
 
 ### F3: Inbox Facturas & Lector SAT (XML/PDF)
--   **Lectura y Filtrado por IMAP:** Carlos vincula su Gmail personal/de compras. El sistema se conecta vía IMAP/Gmail API y aplica filtros para buscar únicamente correos del día que contengan palabras clave (como *factura*, *CFDI*, *XML*) y tengan archivos XML o PDF adjuntos, ignorando el resto de correos personales para preservar su privacidad.
+-   **Lectura y Filtrado por IMAP:** Laravel se conecta vía IMAP (usando librerías como `webklex/laravel-imap`) al Gmail de compras de Carlos. Aplica filtros para buscar únicamente correos del día que contengan palabras clave (como *factura*, *CFDI*, *XML*) y tengan archivos XML o PDF adjuntos, ignorando el resto de correos personales para preservar su privacidad.
 -   **Extracción Automática:** Extrae automáticamente el costo unitario de los tableros y herrajes (leyendo las etiquetas `<cfdi:Concepto>` del XML de proveedores como *Maximaderas* o *Barcocinas*) y actualiza los precios en la base de datos de inventario sin captura manual.
 -   **Registro de Deuda:** Registra el monto de la factura como **Cuenta por Pagar Pendiente**.
 
@@ -92,13 +90,13 @@ Para evitar reestructuraciones y deuda técnica al migrar a la Fase 2, la base d
 
 ---
 
-## 5. Propuesta de Flujo de Pantallas (Móvil-First para Carlos)
+## 5. Propuesta de Flujo de Pantallas (Web-First / Mobile-Responsiva)
 
 ```mermaid
 graph TD
-    Login[1. Login express] --> Dash[2. Dashboard de Carlos]
-    Dash --> Settings[3. Costos de Nómina e Indirectos]
-    Dash --> Inv[4. Inventario Scan QR]
+    Login[1. Login / Autenticación Web] --> Dash[2. Dashboard de Carlos]
+    Dash --> Settings[3. Configuración del Taller]
+    Dash --> Inv[4. Inventario Scan QR Web]
     Dash --> Traveler[5. Control de Hojas Viajeras]
     Dash --> Invoices[6. Buzón de Facturas & Conciliación IA]
     
@@ -111,4 +109,4 @@ graph TD
 
 ## 6. Próximos Pasos de Desarrollo
 1.  **Aprobación del PRD adaptado:** Validar si esta estructura adaptada a Carpintería Escobar es el lenguaje ideal para presentárselo a Gael.
-2.  **Modelado de Base de Datos en Supabase:** Diseñar las tablas de `materiales` (con códigos del SAT), `hojas_viajeras` e `inventario` basados en este PRD.
+2.  **Modelado de Base de Datos en Supabase / Postgres:** Diseñar las tablas de `materiales` (con códigos del SAT), `hojas_viajeras` e `inventario` basados en este PRD.

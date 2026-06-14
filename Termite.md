@@ -10,9 +10,9 @@ SaaS vertical enfocado en el control de producción, presupuestos e inventarios 
 
 ## Objetivos
 - Permitir cotizaciones dinámicas basadas en materiales y mano de obra.
-- Visualizar el flujo de producción del taller en tiempo real.
+- Visualizar el flujo de producción del taller en tiempo real (Hojas Viajeras Digitales).
 - Controlar anticipos, cobros y saldos de cada pedido.
 
-## Stack Propuesto
-- **Frontend:** Flutter (móvil/web)
-- **Backend/BD:** Supabase (Auth, RLS, DB)
+## Stack Seleccionado
+- **Frontend / Backend:** Laravel Monolito (PHP + Blade/Livewire/Vue)
+- **Base de Datos:** PostgreSQL (alojada en Supabase o similar)
