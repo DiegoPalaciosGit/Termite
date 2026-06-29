@@ -100,7 +100,14 @@ export default async function HojaDetailPage({ params }: { params: Promise<{ id:
       {/* Aprobar solicitud de cliente */}
       {isPendiente && (
         <div className="bg-amber-light border border-amber/20 p-4 mb-4">
-          <p className="text-xs font-medium text-amber uppercase tracking-widest mb-1">Solicitud de cliente</p>
+          <div className="flex items-center justify-between mb-1">
+            <p className="text-xs font-medium text-amber uppercase tracking-widest">Solicitud de cliente</p>
+            <p className="text-xs text-umber font-mono">
+              {new Date(hoja.created_at).toLocaleString('es-MX', {
+                day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit',
+              })}
+            </p>
+          </div>
           <p className="text-sm text-bark mb-3">
             Revisa los detalles, pacta precio y fecha con el cliente, luego aprueba para iniciar producción.
           </p>
