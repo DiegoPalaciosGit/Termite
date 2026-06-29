@@ -4,21 +4,21 @@ import Link from 'next/link'
 import { updateStatus, addStage, deleteStage } from '../actions'
 
 const STAGES: Record<string, string> = {
-  corte: 'Corte (CNC / Sierra)',
-  lijado: 'Lijado / Porosidad',
-  laca: 'Laca / Pintura',
-  ensamble: 'Ensamble / Herrajes',
+  corte:     'Corte (CNC / Sierra)',
+  lijado:    'Lijado / Porosidad',
+  laca:      'Laca / Pintura',
+  ensamble:  'Ensamble / Herrajes',
   emplayado: 'Emplayado y Almacén',
 }
 const STATUS_BADGE: Record<string, string> = {
-  en_proceso: 'bg-blue-100 text-blue-700',
-  retrabajo: 'bg-red-100 text-red-700',
-  terminado: 'bg-green-100 text-green-700',
+  en_proceso: 'bg-terra-light text-terra-text',
+  retrabajo:  'bg-rust-light text-rust',
+  terminado:  'bg-pine-light text-pine',
 }
 const STATUS_LABEL: Record<string, string> = {
   en_proceso: 'En proceso',
-  retrabajo: 'Retrabajo',
-  terminado: 'Terminado',
+  retrabajo:  'Necesita corrección',
+  terminado:  'Terminado',
 }
 
 function formatDuration(minutes: number | null) {
@@ -45,21 +45,15 @@ type Stage = {
   notes: string | null
 }
 
+const inputCls = 'w-full border border-warm bg-white text-bark text-sm px-3 py-2.5 focus:outline-none focus:border-terra transition-colors placeholder:text-dust'
+
 export default async function HojaDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
   const supabase = await createClient()
 
   const [{ data: hoja }, { data: stages }] = await Promise.all([
-    supabase
-      .from('hojas_viajeras')
-      .select('*, clients(name)')
-      .eq('id', id)
-      .single(),
-    supabase
-      .from('hoja_stages')
-      .select('*')
-      .eq('hoja_viajera_id', id)
-      .order('created_at', { ascending: true }),
+    supabase.from('hojas_viajeras').select('*, clients(name)').eq('id', id).single(),
+    supabase.from('hoja_stages').select('*').eq('hoja_viajera_id', id).order('created_at', { ascending: true }),
   ])
 
   if (!hoja) notFound()
@@ -69,41 +63,39 @@ export default async function HojaDetailPage({ params }: { params: Promise<{ id:
 
   return (
     <>
-      {/* Header */}
       <div className="flex items-start justify-between mb-4">
-        <div className="flex items-center gap-3">
-          <Link href="/hojas" className="text-gray-400 hover:text-gray-600 text-lg">←</Link>
+        <div className="flex items-start gap-3">
+          <Link href="/hojas" className="text-dust hover:text-bark transition-colors mt-1">←</Link>
           <div>
-            <div className="flex items-center gap-2 mb-0.5">
-              <span className="text-xs font-mono text-gray-400">{hoja.folio}</span>
-              <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${STATUS_BADGE[hoja.status]}`}>
+            <div className="flex items-center gap-2 mb-1">
+              <span className="text-xs font-mono text-dust">{hoja.folio}</span>
+              <span className={`text-xs px-1.5 py-0.5 rounded font-medium ${STATUS_BADGE[hoja.status]}`}>
                 {STATUS_LABEL[hoja.status]}
               </span>
             </div>
-            <h1 className="text-xl font-bold text-gray-900">{hoja.product_name}</h1>
-            <p className="text-sm text-gray-500">{clientName} · ×{hoja.quantity}</p>
+            <h1 className="text-lg font-semibold text-bark">{hoja.product_name}</h1>
+            <p className="text-sm text-umber">{clientName} · ×{hoja.quantity}</p>
             {hoja.estimated_end_date && (
-              <p className="text-xs text-gray-400 mt-0.5">
+              <p className="text-xs text-dust mt-0.5">
                 Entrega: {new Date(hoja.estimated_end_date).toLocaleDateString('es-MX', { dateStyle: 'medium' })}
               </p>
             )}
           </div>
         </div>
-        <Link href={`/hojas/${id}/editar`} className="text-sm text-amber-600 hover:underline shrink-0">
+        <Link href={`/hojas/${id}/editar`} className="text-xs text-dust hover:text-bark uppercase tracking-widest shrink-0 mt-1 transition-colors">
           Editar
         </Link>
       </div>
 
       {hoja.notes && (
-        <div className="bg-amber-50 border border-amber-100 rounded-xl px-4 py-2 mb-4 text-sm text-gray-600">
+        <div className="bg-terra-light border border-terra/20 px-4 py-3 mb-4 text-sm text-terra-text">
           {hoja.notes}
         </div>
       )}
 
-      {/* Status change */}
       {hoja.status !== 'terminado' && (
-        <div className="bg-white rounded-xl border border-gray-100 p-4 mb-4">
-          <p className="text-xs font-medium text-gray-400 mb-2">Cambiar status</p>
+        <div className="bg-white border border-warm p-4 mb-4">
+          <p className="text-xs font-medium text-dust uppercase tracking-widest mb-3">Cambiar estado</p>
           <div className="flex gap-2 flex-wrap">
             {(['en_proceso', 'retrabajo', 'terminado'] as const)
               .filter(s => s !== hoja.status)
@@ -113,13 +105,13 @@ export default async function HojaDetailPage({ params }: { params: Promise<{ id:
                   <input type="hidden" name="status" value={s} />
                   <button
                     type="submit"
-                    className={`text-sm px-3 py-1.5 rounded-lg font-medium transition-colors ${
-                      s === 'retrabajo' ? 'bg-red-100 text-red-700 hover:bg-red-200' :
-                      s === 'terminado' ? 'bg-green-100 text-green-700 hover:bg-green-200' :
-                      'bg-blue-100 text-blue-700 hover:bg-blue-200'
+                    className={`text-xs px-4 py-2 font-medium tracking-wide transition-colors ${
+                      s === 'retrabajo' ? 'bg-rust-light text-rust hover:bg-rust/20' :
+                      s === 'terminado' ? 'bg-pine-light text-pine hover:bg-pine/20' :
+                      'bg-terra-light text-terra-text hover:bg-terra/20'
                     }`}
                   >
-                    → {STATUS_LABEL[s]}
+                    Marcar como: {STATUS_LABEL[s]}
                   </button>
                 </form>
               ))}
@@ -127,106 +119,79 @@ export default async function HojaDetailPage({ params }: { params: Promise<{ id:
         </div>
       )}
 
-      {/* Stages log */}
-      <div className="bg-white rounded-xl border border-gray-100 p-4 mb-4">
-        <h3 className="text-sm font-medium text-gray-700 mb-3">Bitácora de etapas</h3>
+      <div className="bg-white border border-warm p-4 mb-4">
+        <p className="text-xs font-medium text-dust uppercase tracking-widest mb-3">
+          Registro de avance{stageList.length > 0 && <span className="ml-2 text-dust font-normal normal-case tracking-normal">({stageList.length} etapa{stageList.length !== 1 ? 's' : ''})</span>}
+        </p>
         {stageList.length === 0 ? (
-          <p className="text-sm text-gray-400">Sin etapas registradas.</p>
+          <p className="text-sm text-dust">Sin etapas registradas todavía.</p>
         ) : (
-          <div className="overflow-x-auto -mx-1">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="text-left text-xs text-gray-400 border-b border-gray-100">
-                  <th className="pb-2 pr-3 font-medium">Etapa</th>
-                  <th className="pb-2 pr-3 font-medium">Trabajador</th>
-                  <th className="pb-2 pr-3 font-medium">Inicio</th>
-                  <th className="pb-2 pr-3 font-medium">Fin</th>
-                  <th className="pb-2 pr-3 font-medium">Duración</th>
-                  <th className="pb-2" />
-                </tr>
-              </thead>
-              <tbody>
-                {stageList.map(s => (
-                  <tr key={s.id} className="border-b border-gray-50 last:border-0">
-                    <td className="py-2 pr-3 font-medium text-gray-700 whitespace-nowrap">
-                      {STAGES[s.stage] ?? s.stage}
-                    </td>
-                    <td className="py-2 pr-3 text-gray-500">{s.worker_name ?? '—'}</td>
-                    <td className="py-2 pr-3 text-gray-500 whitespace-nowrap text-xs">{formatDatetime(s.started_at)}</td>
-                    <td className="py-2 pr-3 text-gray-500 whitespace-nowrap text-xs">{formatDatetime(s.finished_at)}</td>
-                    <td className="py-2 pr-3 font-medium text-gray-700">{formatDuration(s.duration_minutes)}</td>
-                    <td className="py-2">
-                      <form action={deleteStage}>
-                        <input type="hidden" name="hoja_id" value={id} />
-                        <input type="hidden" name="stage_id" value={s.id} />
-                        <button type="submit" className="text-xs text-red-300 hover:text-red-500">✕</button>
-                      </form>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="space-y-0">
+            {stageList.map(s => (
+              <div key={s.id} className="flex items-start justify-between gap-3 py-3 border-b border-warm/60 last:border-0">
+                <div className="min-w-0">
+                  <p className="text-sm font-medium text-bark">{STAGES[s.stage] ?? s.stage}</p>
+                  <p className="text-xs text-umber mt-0.5">
+                    {s.worker_name ?? 'Sin trabajador asignado'}
+                    {s.duration_minutes ? <span className="ml-2 text-dust">· {formatDuration(s.duration_minutes)}</span> : null}
+                  </p>
+                  {(s.started_at || s.finished_at) && (
+                    <p className="text-xs text-dust mt-0.5 font-mono">
+                      {formatDatetime(s.started_at)} → {formatDatetime(s.finished_at)}
+                    </p>
+                  )}
+                  {s.notes && <p className="text-xs text-dust mt-0.5 italic">{s.notes}</p>}
+                </div>
+                <form action={deleteStage} className="shrink-0">
+                  <input type="hidden" name="hoja_id" value={id} />
+                  <input type="hidden" name="stage_id" value={s.id} />
+                  <button
+                    type="submit"
+                    className="text-xs text-dust hover:text-rust transition-colors p-1"
+                    aria-label="Eliminar etapa"
+                  >
+                    ✕
+                  </button>
+                </form>
+              </div>
+            ))}
           </div>
         )}
       </div>
 
-      {/* Add stage form */}
-      <div className="bg-white rounded-xl border border-gray-100 p-4">
-        <h3 className="text-sm font-medium text-gray-700 mb-3">Registrar etapa</h3>
-        <form action={addStage} className="space-y-3">
+      <div className="bg-white border border-warm p-4">
+        <p className="text-xs font-medium text-dust uppercase tracking-widest mb-4">Registrar etapa de producción</p>
+        <form action={addStage} className="space-y-4">
           <input type="hidden" name="hoja_id" value={id} />
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs text-gray-500 mb-1">Etapa *</label>
-              <select
-                name="stage"
-                required
-                className="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-amber-400"
-              >
+              <label className="block text-xs text-umber font-medium mb-2 uppercase tracking-widest">Etapa *</label>
+              <select name="stage" required className={inputCls}>
                 {Object.entries(STAGES).map(([key, label]) => (
                   <option key={key} value={key}>{label}</option>
                 ))}
               </select>
             </div>
             <div>
-              <label className="block text-xs text-gray-500 mb-1">Trabajador</label>
-              <input
-                name="worker_name"
-                placeholder="Nombre"
-                className="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
-              />
+              <label className="block text-xs text-umber font-medium mb-2 uppercase tracking-widest">Trabajador</label>
+              <input name="worker_name" placeholder="Nombre del trabajador" className={inputCls} />
             </div>
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs text-gray-500 mb-1">Inicio</label>
-              <input
-                name="started_at"
-                type="datetime-local"
-                className="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
-              />
+              <label className="block text-xs text-umber font-medium mb-2 uppercase tracking-widest">Inicio</label>
+              <input name="started_at" type="datetime-local" className={inputCls} />
             </div>
             <div>
-              <label className="block text-xs text-gray-500 mb-1">Fin</label>
-              <input
-                name="finished_at"
-                type="datetime-local"
-                className="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
-              />
+              <label className="block text-xs text-umber font-medium mb-2 uppercase tracking-widest">Fin</label>
+              <input name="finished_at" type="datetime-local" className={inputCls} />
             </div>
           </div>
           <div>
-            <label className="block text-xs text-gray-500 mb-1">Notas</label>
-            <input
-              name="notes"
-              placeholder="Opcional"
-              className="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
-            />
+            <label className="block text-xs text-umber font-medium mb-2 uppercase tracking-widest">Notas</label>
+            <input name="notes" placeholder="Observaciones opcionales" className={inputCls} />
           </div>
-          <button
-            type="submit"
-            className="w-full bg-amber-500 hover:bg-amber-600 text-white font-medium py-2 rounded-lg text-sm transition-colors"
-          >
+          <button type="submit" className="w-full bg-terra hover:bg-terra-dark text-white font-medium py-2.5 px-4 text-sm tracking-wide transition-colors">
             Guardar etapa
           </button>
         </form>

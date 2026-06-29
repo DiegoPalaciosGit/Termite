@@ -1,26 +1,39 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  /* Termite — paleta extraída del logo (termita minimalista café oscuro sobre linen) */
+  --color-linen: #F7F3EE;
+  --color-bark: #3B2A1A;
+  --color-umber: #8A6F5A;
+  --color-dust: #A08878;
+  --color-warm: #E0D5C8;
+  --color-warm-hover: #C8B5A0;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-terra: #B85C38;
+  --color-terra-dark: #924826;
+  --color-terra-light: #FBE9E1;
+  --color-terra-text: #7A2E10;
+
+  --color-pine: #3D6B4F;
+  --color-pine-light: #E3EEE8;
+  --color-amber: #B87C28;
+  --color-amber-light: #FDF3E0;
+  --color-rust: #9B3A2A;
+  --color-rust-light: #F5E2DE;
+
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: #F7F3EE;
+  color: #3B2A1A;
+  font-family: 'Inter', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code, .font-mono {
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
 }

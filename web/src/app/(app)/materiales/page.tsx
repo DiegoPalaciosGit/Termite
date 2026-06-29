@@ -13,19 +13,19 @@ type Material = {
 }
 
 const CAT_LABEL: Record<string, string> = {
-  A: 'Categoría A — Alta rotación',
-  B: 'Categoría B — Rotación media',
-  C: 'Categoría C — Baja rotación',
+  A: 'Materiales principales · Alta rotación',
+  B: 'Materiales secundarios · Rotación media',
+  C: 'Materiales eventuales · Baja rotación',
 }
 
-function stockBadge(m: Material) {
+function StockBadge({ m }: { m: Material }) {
   if (Number(m.stock_current) <= Number(m.stock_min)) {
-    return <span className="text-xs px-2 py-0.5 rounded-full bg-red-100 text-red-700 font-medium">En alerta</span>
+    return <span className="text-xs px-1.5 py-0.5 rounded bg-rust-light text-rust font-medium">En alerta</span>
   }
   if (Number(m.cost_unit) === 0) {
-    return <span className="text-xs px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 font-medium">Precio pendiente</span>
+    return <span className="text-xs px-1.5 py-0.5 rounded bg-amber-light text-amber font-medium">Sin precio</span>
   }
-  return <span className="text-xs px-2 py-0.5 rounded-full bg-green-100 text-green-700 font-medium">OK</span>
+  return <span className="text-xs px-1.5 py-0.5 rounded bg-pine-light text-pine font-medium">OK</span>
 }
 
 export default async function MaterialesPage() {
@@ -48,16 +48,18 @@ export default async function MaterialesPage() {
 
   return (
     <>
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-6">
         <div>
-          <h2 className="text-sm font-medium text-gray-500 uppercase tracking-wide">Materiales</h2>
-          {alertas > 0 && (
-            <p className="text-sm text-red-600 font-medium mt-0.5">{alertas} en alerta de stock</p>
+          <h1 className="text-lg font-semibold text-bark">Inventario</h1>
+          {alertas > 0 ? (
+            <p className="text-sm text-rust font-medium mt-0.5">{alertas} material{alertas !== 1 ? 'es' : ''} por reabastecer</p>
+          ) : (
+            <p className="text-sm text-dust mt-0.5">Todos los materiales y existencias</p>
           )}
         </div>
         <Link
           href="/materiales/nuevo"
-          className="bg-amber-500 hover:bg-amber-600 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"
+          className="bg-terra hover:bg-terra-dark text-white font-medium py-2 px-4 text-xs tracking-wide transition-colors shrink-0"
         >
           + Nuevo
         </Link>
@@ -68,30 +70,30 @@ export default async function MaterialesPage() {
         if (items.length === 0) return null
         return (
           <div key={cat} className="mb-6">
-            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">{CAT_LABEL[cat]}</p>
-            <div className="space-y-2">
+            <p className="text-xs font-medium text-dust uppercase tracking-widest mb-2">{CAT_LABEL[cat]}</p>
+            <div className="space-y-px">
               {items.map(m => (
                 <Link
                   key={m.id}
                   href={`/materiales/${m.id}`}
-                  className="block bg-white rounded-xl border border-gray-100 px-4 py-3 hover:border-amber-200 transition-colors"
+                  className="block bg-white border border-warm px-4 py-3 hover:bg-linen transition-colors"
                 >
                   <div className="flex items-center justify-between gap-3">
                     <div className="min-w-0">
-                      <div className="flex items-center gap-2 mb-0.5">
-                        <span className="text-xs font-mono text-gray-400">{m.code}</span>
-                        {stockBadge(m)}
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="text-xs font-mono text-dust">{m.code}</span>
+                        <StockBadge m={m} />
                       </div>
-                      <p className="font-medium text-gray-900 truncate">{m.name}</p>
-                      <p className="text-sm text-gray-500">
+                      <p className="font-medium text-bark truncate">{m.name}</p>
+                      <p className="text-sm text-umber">
                         ${Number(m.cost_unit).toFixed(2)}/{m.unit} · mín. {m.stock_min}
                       </p>
                     </div>
                     <div className="text-right shrink-0">
-                      <p className={`text-2xl font-bold ${Number(m.stock_current) <= Number(m.stock_min) ? 'text-red-600' : 'text-gray-900'}`}>
+                      <p className={`text-2xl font-bold tabular-nums ${Number(m.stock_current) <= Number(m.stock_min) ? 'text-rust' : 'text-bark'}`}>
                         {Number(m.stock_current)}
                       </p>
-                      <p className="text-xs text-gray-400">{m.unit}</p>
+                      <p className="text-xs text-dust">{m.unit}</p>
                     </div>
                   </div>
                 </Link>

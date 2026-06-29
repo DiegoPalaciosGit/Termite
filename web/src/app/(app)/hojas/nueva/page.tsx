@@ -2,6 +2,8 @@ import { createClient } from '@/lib/supabase/server'
 import { createHoja } from '../actions'
 import Link from 'next/link'
 
+const inputCls = 'w-full border border-warm bg-white text-bark text-sm px-3 py-2.5 focus:outline-none focus:border-terra transition-colors placeholder:text-dust'
+
 export default async function NuevaHojaPage() {
   const supabase = await createClient()
   const { data: clientes } = await supabase.from('clients').select('id, name').order('name')
@@ -9,28 +11,19 @@ export default async function NuevaHojaPage() {
   return (
     <>
       <div className="flex items-center gap-3 mb-6">
-        <Link href="/hojas" className="text-gray-400 hover:text-gray-600 text-lg">←</Link>
-        <h2 className="text-sm font-medium text-gray-500 uppercase tracking-wide">Nueva Hoja Viajera</h2>
+        <Link href="/hojas" className="text-dust hover:text-bark transition-colors">←</Link>
+        <p className="text-xs text-dust uppercase tracking-widest font-medium">Nueva Orden de Trabajo</p>
       </div>
 
-      <form action={createHoja} className="bg-white rounded-xl border border-gray-100 p-5 space-y-4 max-w-lg">
+      <form action={createHoja} className="bg-white border border-warm p-5 space-y-5">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Producto *</label>
-          <input
-            name="product_name"
-            required
-            maxLength={255}
-            placeholder="Ej. Mueble Pink Up"
-            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
-          />
+          <label className="block text-xs font-medium text-umber uppercase tracking-widest mb-2">Producto *</label>
+          <input name="product_name" required maxLength={255} placeholder="Ej. Mueble Pink Up" className={inputCls} />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Cliente</label>
-          <select
-            name="client_id"
-            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-amber-400"
-          >
+          <label className="block text-xs font-medium text-umber uppercase tracking-widest mb-2">Cliente</label>
+          <select name="client_id" className={inputCls}>
             <option value="">Sin cliente</option>
             {clientes?.map(c => (
               <option key={c.id} value={c.id}>{c.name}</option>
@@ -39,41 +32,22 @@ export default async function NuevaHojaPage() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Cantidad *</label>
-          <input
-            name="quantity"
-            type="number"
-            min="1"
-            defaultValue="1"
-            required
-            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
-          />
+          <label className="block text-xs font-medium text-umber uppercase tracking-widest mb-2">Cantidad *</label>
+          <input name="quantity" type="number" min="1" defaultValue="1" required className={inputCls} />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Fecha estimada de entrega</label>
-          <input
-            name="estimated_end_date"
-            type="date"
-            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
-          />
+          <label className="block text-xs font-medium text-umber uppercase tracking-widest mb-2">Fecha estimada de entrega</label>
+          <input name="estimated_end_date" type="date" className={inputCls} />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Notas</label>
-          <textarea
-            name="notes"
-            rows={3}
-            placeholder="Observaciones, especificaciones, etc."
-            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400 resize-none"
-          />
+          <label className="block text-xs font-medium text-umber uppercase tracking-widest mb-2">Notas</label>
+          <textarea name="notes" rows={3} placeholder="Observaciones, especificaciones, etc." className={`${inputCls} resize-none`} />
         </div>
 
-        <button
-          type="submit"
-          className="w-full bg-amber-500 hover:bg-amber-600 text-white font-medium py-2.5 rounded-lg transition-colors"
-        >
-          Crear Hoja Viajera
+        <button type="submit" className="w-full bg-terra hover:bg-terra-dark text-white font-medium py-2.5 px-4 text-sm tracking-wide transition-colors">
+          Crear Orden
         </button>
       </form>
     </>

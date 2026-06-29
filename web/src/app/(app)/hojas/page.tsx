@@ -2,14 +2,14 @@ import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
 
 const STATUS_BADGE: Record<string, string> = {
-  en_proceso: 'bg-blue-100 text-blue-700',
-  retrabajo: 'bg-red-100 text-red-700',
-  terminado: 'bg-green-100 text-green-700',
+  en_proceso: 'bg-terra-light text-terra-text',
+  retrabajo:  'bg-rust-light text-rust',
+  terminado:  'bg-pine-light text-pine',
 }
 const STATUS_LABEL: Record<string, string> = {
   en_proceso: 'En proceso',
-  retrabajo: 'Retrabajo',
-  terminado: 'Terminado',
+  retrabajo:  'Retrabajo',
+  terminado:  'Terminado',
 }
 const STATUS_ORDER: Record<string, number> = {
   retrabajo: 0,
@@ -32,47 +32,50 @@ export default async function HojasPage() {
   return (
     <>
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-sm font-medium text-gray-500 uppercase tracking-wide">Hojas Viajeras</h2>
+        <div>
+          <h1 className="text-lg font-semibold text-bark">Órdenes de Trabajo</h1>
+          <p className="text-sm text-dust mt-0.5">Seguimiento de cada pieza en producción</p>
+        </div>
         <Link
           href="/hojas/nueva"
-          className="bg-amber-500 hover:bg-amber-600 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"
+          className="bg-terra hover:bg-terra-dark text-white font-medium py-2 px-4 text-xs tracking-wide transition-colors shrink-0"
         >
-          + Nueva HV
+          + Nueva orden
         </Link>
       </div>
 
       {sorted.length === 0 ? (
-        <div className="text-center py-16 text-gray-400">
-          <p className="text-lg mb-2">Sin órdenes todavía</p>
-          <Link href="/hojas/nueva" className="text-amber-600 hover:underline">
-            Crear la primera
+        <div className="text-center py-16 text-dust border border-dashed border-warm">
+          <p className="text-sm mb-2">Aún no hay órdenes registradas</p>
+          <Link href="/hojas/nueva" className="text-terra hover:text-terra-dark text-sm font-medium">
+            Crear la primera orden →
           </Link>
         </div>
       ) : (
-        <div className="space-y-2">
+        <div className="space-y-px">
           {sorted.map(h => (
             <Link
               key={h.id}
               href={`/hojas/${h.id}`}
-              className="block bg-white rounded-xl border border-gray-100 px-4 py-3 hover:border-amber-200 transition-colors"
+              className="block bg-white border border-warm px-4 py-3 hover:bg-linen transition-colors"
             >
               <div className="flex items-center justify-between gap-3">
                 <div className="min-w-0">
-                  <div className="flex items-center gap-2 mb-0.5">
-                    <span className="text-xs font-mono text-gray-400">{h.folio}</span>
-                    <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${STATUS_BADGE[h.status]}`}>
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-xs font-mono text-dust">{h.folio}</span>
+                    <span className={`text-xs px-1.5 py-0.5 rounded font-medium ${STATUS_BADGE[h.status]}`}>
                       {STATUS_LABEL[h.status]}
                     </span>
                   </div>
-                  <p className="font-medium text-gray-900 truncate">{h.product_name}</p>
-                  <p className="text-sm text-gray-500">
+                  <p className="font-medium text-bark truncate">{h.product_name}</p>
+                  <p className="text-sm text-umber">
                     {(h.clients as unknown as { name: string } | null)?.name ?? 'Sin cliente'} · ×{h.quantity}
                   </p>
                 </div>
                 {h.estimated_end_date && (
                   <div className="text-right shrink-0">
-                    <p className="text-xs text-gray-400">Entrega</p>
-                    <p className="text-sm font-medium text-gray-700">
+                    <p className="text-xs text-dust uppercase tracking-widest">Entrega</p>
+                    <p className="text-sm font-semibold text-bark">
                       {new Date(h.estimated_end_date).toLocaleDateString('es-MX', {
                         month: 'short',
                         day: 'numeric',

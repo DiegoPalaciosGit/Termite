@@ -1,11 +1,11 @@
 import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
 
-const SEMAFORO: Record<string, { dot: string; label: string; text: string }> = {
-  verde:    { dot: 'bg-green-500',  label: 'Rentable',    text: 'text-green-700' },
-  amarillo: { dot: 'bg-yellow-400', label: 'Apretado',    text: 'text-yellow-700' },
-  rojo:     { dot: 'bg-red-500',    label: 'Bajo margen', text: 'text-red-700' },
-  gris:     { dot: 'bg-gray-300',   label: 'Sin datos',   text: 'text-gray-400' },
+const SEMAFORO: Record<string, { dot: string; label: string; text: string; bg: string }> = {
+  verde:    { dot: 'bg-pine',    label: 'Rentable',    text: 'text-pine',   bg: 'bg-pine-light' },
+  amarillo: { dot: 'bg-amber',   label: 'Apretado',    text: 'text-amber',  bg: 'bg-amber-light' },
+  rojo:     { dot: 'bg-rust',    label: 'Bajo margen', text: 'text-rust',   bg: 'bg-rust-light' },
+  gris:     { dot: 'bg-warm',    label: 'Sin datos',   text: 'text-dust',   bg: 'bg-white' },
 }
 
 export default async function CostosPage() {
@@ -21,55 +21,58 @@ export default async function CostosPage() {
   return (
     <>
       <div className="flex items-center justify-between mb-2">
-        <h2 className="text-sm font-medium text-gray-500 uppercase tracking-wide">Semáforo de Rentabilidad</h2>
+        <div>
+          <h1 className="text-lg font-semibold text-bark">Rentabilidad</h1>
+          <p className="text-sm text-dust mt-0.5">¿Cuánto gana el taller por cada producto?</p>
+        </div>
         <Link
           href="/costos/nuevo"
-          className="bg-amber-500 hover:bg-amber-600 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"
+          className="bg-terra hover:bg-terra-dark text-white font-medium py-2 px-4 text-xs tracking-wide transition-colors shrink-0"
         >
           + Producto
         </Link>
       </div>
-      <p className="text-xs text-gray-400 mb-6">
-        Margen mínimo configurado: <span className="font-medium text-gray-600">{minMargin}%</span>
+      <p className="text-xs text-dust mb-6">
+        Margen mínimo: <span className="font-semibold text-umber">{minMargin}%</span>
         {' · '}
-        <Link href="/costos/config" className="text-amber-600 hover:underline">Configurar taller</Link>
+        <Link href="/costos/config" className="text-terra hover:text-terra-dark">Ajustar configuración</Link>
       </p>
 
       {(productos ?? []).length === 0 ? (
-        <div className="text-center py-16 text-gray-400">
-          <p className="mb-2">Sin productos en el catálogo</p>
-          <Link href="/costos/nuevo" className="text-amber-600 hover:underline">Agregar el primero</Link>
+        <div className="text-center py-16 text-dust border border-dashed border-warm">
+          <p className="text-sm mb-2">Sin productos en el catálogo</p>
+          <Link href="/costos/nuevo" className="text-terra hover:text-terra-dark text-sm font-medium">Agregar el primero →</Link>
         </div>
       ) : (
-        <div className="space-y-3">
+        <div className="space-y-px">
           {(productos ?? []).map(p => {
             const s = SEMAFORO[p.margin_status ?? 'gris'] ?? SEMAFORO.gris
             return (
               <Link
                 key={p.id}
                 href={`/costos/${p.id}/editar`}
-                className="block bg-white rounded-xl border border-gray-100 px-4 py-4 hover:border-amber-200 transition-colors"
+                className="block bg-white border border-warm px-4 py-4 hover:bg-linen transition-colors"
               >
                 <div className="flex items-center justify-between gap-4">
                   <div className="min-w-0 flex-1">
-                    <p className="font-medium text-gray-900 truncate mb-1">{p.name}</p>
-                    <div className="flex gap-4 text-sm text-gray-500">
-                      <span>Venta: <span className="font-medium text-gray-700">${Number(p.sale_price).toLocaleString('es-MX')}</span></span>
-                      <span>Costo: <span className="font-medium text-gray-700">${Number(p.estimated_cost).toLocaleString('es-MX')}</span></span>
+                    <p className="font-medium text-bark truncate mb-1">{p.name}</p>
+                    <div className="flex gap-4 text-sm text-umber">
+                      <span>Venta: <span className="font-semibold text-bark">${Number(p.sale_price).toLocaleString('es-MX')}</span></span>
+                      <span>Costo: <span className="font-semibold text-bark">${Number(p.estimated_cost).toLocaleString('es-MX')}</span></span>
                     </div>
                   </div>
-                  <div className="text-right shrink-0">
-                    <div className="flex items-center gap-2 justify-end mb-0.5">
-                      <span className={`w-3 h-3 rounded-full ${s.dot}`} />
-                      <span className={`text-sm font-semibold ${s.text}`}>
-                        {p.margin_status === 'gris' ? s.label : `${Number(p.margin_pct).toFixed(1)}%`}
+                  <div className={`text-right shrink-0 px-3 py-2 ${s.bg}`}>
+                    <div className="flex items-center gap-1.5 justify-end mb-0.5">
+                      <span className={`w-2 h-2 rounded-full ${s.dot}`} />
+                      <span className={`text-sm font-bold ${s.text}`}>
+                        {p.margin_status === 'gris' ? '—' : `${Number(p.margin_pct).toFixed(1)}%`}
                       </span>
                     </div>
-                    <p className={`text-xs ${s.text}`}>{s.label}</p>
+                    <p className={`text-xs font-medium ${s.text}`}>{s.label}</p>
                   </div>
                 </div>
                 {p.margin_status === 'gris' && (
-                  <p className="text-xs text-gray-400 mt-2">Ingresa precio de venta y costo estimado para ver el semáforo</p>
+                  <p className="text-xs text-dust mt-2">Ingresa precio y costo para calcular el margen</p>
                 )}
               </Link>
             )

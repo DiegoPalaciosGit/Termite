@@ -1,35 +1,55 @@
 import { login } from './actions'
 
-export default function LoginPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ error?: string }>
-}) {
+function TermiteLogo() {
   return (
-    <div className="min-h-screen bg-amber-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-sm border border-amber-100 w-full max-w-sm p-8">
-        <div className="mb-8">
-          <h1 className="text-2xl font-bold text-gray-900">Termite</h1>
-          <p className="text-sm text-gray-500 mt-1">Control de producción · Escobar</p>
+    <svg
+      width="44"
+      height="56"
+      viewBox="0 0 40 50"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+    >
+      <line x1="14" y1="15" x2="2" y2="3" stroke="#3B2A1A" strokeWidth="3.5" strokeLinecap="round"/>
+      <line x1="26" y1="15" x2="38" y2="3" stroke="#3B2A1A" strokeWidth="3.5" strokeLinecap="round"/>
+      <circle cx="20" cy="21" r="7.5" stroke="#3B2A1A" strokeWidth="3.5"/>
+      <circle cx="20" cy="37" r="11.5" stroke="#3B2A1A" strokeWidth="3.5"/>
+    </svg>
+  )
+}
+
+const inputCls = 'w-full px-0 py-2.5 border-0 border-b border-warm bg-transparent text-bark text-sm focus:outline-none focus:border-bark transition-colors placeholder:text-dust'
+
+export default function LoginPage() {
+  return (
+    <div className="min-h-dvh bg-linen flex items-center justify-center p-6">
+      <div className="w-full max-w-xs">
+        <div className="mb-12 text-center">
+          <div className="flex justify-center mb-6">
+            <TermiteLogo />
+          </div>
+          <h1 className="text-lg font-semibold text-bark tracking-tight">termite</h1>
+          <p className="text-sm text-dust mt-1">Carpintería Escobar</p>
         </div>
 
-        <form action={login} className="space-y-4">
+        <form action={login} className="space-y-6">
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-              Correo
+            <label htmlFor="email" className="block text-xs font-medium text-umber uppercase tracking-widest mb-2">
+              Correo electrónico
             </label>
             <input
               id="email"
               name="email"
               type="email"
               required
+              autoComplete="email"
               defaultValue="carlos@escobar.com"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+              className={inputCls}
             />
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="password" className="block text-xs font-medium text-umber uppercase tracking-widest mb-2">
               Contraseña
             </label>
             <input
@@ -37,25 +57,25 @@ export default function LoginPage({
               name="password"
               type="password"
               required
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+              autoComplete="current-password"
+              className={inputCls}
             />
           </div>
 
           <button
             type="submit"
-            className="w-full bg-amber-600 hover:bg-amber-700 text-white font-medium py-2 px-4 rounded-lg text-sm transition-colors"
+            className="w-full bg-terra hover:bg-terra-dark text-white font-medium py-2.5 px-4 text-sm tracking-wide transition-colors mt-2"
           >
             Entrar
           </button>
         </form>
 
-        {/* Error shown after redirect */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
               if (new URLSearchParams(window.location.search).get('error')) {
                 document.querySelector('form').insertAdjacentHTML('afterend',
-                  '<p class="mt-3 text-sm text-red-600 text-center">Correo o contraseña incorrectos</p>')
+                  '<p class="mt-4 text-xs text-rust text-center">Correo o contraseña incorrectos.</p>')
               }
             `,
           }}
