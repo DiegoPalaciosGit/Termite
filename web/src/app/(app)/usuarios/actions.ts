@@ -20,9 +20,10 @@ function traducirError(msg: string): string {
 export async function inviteUsuario(formData: FormData) {
   const email = (formData.get('email') as string).trim()
   const nombre = (formData.get('nombre') as string).trim()
+  const role = (formData.get('role') as string) || 'worker'
   const admin = createAdminClient()
   const { error } = await admin.auth.admin.inviteUserByEmail(email, {
-    data: { nombre },
+    data: { nombre, role },
     redirectTo: 'https://mangle-termite.vercel.app/set-password',
   })
   if (error) {

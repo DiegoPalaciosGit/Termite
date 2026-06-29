@@ -1,7 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { logout } from '@/app/login/actions'
-import AppNav from '@/app/ui/AppNav'
 
 function TermiteLogo({ className = '' }: { className?: string }) {
   return (
@@ -22,19 +21,20 @@ function TermiteLogo({ className = '' }: { className?: string }) {
   )
 }
 
-export default async function AppLayout({ children }: { children: React.ReactNode }) {
+export default async function PortalLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
-
-  const role = (user.user_metadata?.role as string) ?? 'worker'
 
   return (
     <div className="min-h-dvh bg-linen">
       <header className="bg-white border-b border-warm px-4 py-3 flex items-center justify-between sticky top-0 z-10">
         <div className="flex items-center gap-2">
           <TermiteLogo className="text-bark" />
-          <span className="font-semibold text-sm text-bark tracking-tight leading-none">termite</span>
+          <div>
+            <span className="font-semibold text-sm text-bark tracking-tight leading-none">termite</span>
+            <span className="text-dust text-xs ml-2">· Portal de clientes</span>
+          </div>
         </div>
         <form action={logout}>
           <button
@@ -45,7 +45,6 @@ export default async function AppLayout({ children }: { children: React.ReactNod
           </button>
         </form>
       </header>
-      <AppNav role={role} />
       <main className="max-w-2xl mx-auto px-4 py-6">
         {children}
       </main>

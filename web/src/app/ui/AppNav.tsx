@@ -2,10 +2,11 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
-const links = [
+const ALL_LINKS = [
   {
     href: '/dashboard',
     label: 'Panel',
+    roles: ['admin', 'worker'],
     icon: (
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
         <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
@@ -16,6 +17,7 @@ const links = [
   {
     href: '/hojas',
     label: 'Órdenes',
+    roles: ['admin', 'worker'],
     icon: (
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
         <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
@@ -27,6 +29,7 @@ const links = [
   {
     href: '/materiales',
     label: 'Inventario',
+    roles: ['admin', 'worker'],
     icon: (
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
         <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
@@ -36,6 +39,7 @@ const links = [
   {
     href: '/costos',
     label: 'Rentabilidad',
+    roles: ['admin'],
     icon: (
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
         <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/>
@@ -46,6 +50,7 @@ const links = [
   {
     href: '/clientes',
     label: 'Clientes',
+    roles: ['admin'],
     icon: (
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
         <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
@@ -57,6 +62,7 @@ const links = [
   {
     href: '/usuarios',
     label: 'Equipo',
+    roles: ['admin'],
     icon: (
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
         <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
@@ -67,8 +73,10 @@ const links = [
   },
 ]
 
-export default function AppNav() {
+export default function AppNav({ role }: { role: string }) {
   const pathname = usePathname()
+  const links = ALL_LINKS.filter(l => l.roles.includes(role))
+
   return (
     <nav className="bg-white border-b border-warm overflow-x-auto" style={{ scrollbarWidth: 'none' }} aria-label="Navegación principal">
       <div className="flex min-w-max max-w-2xl mx-auto px-2">

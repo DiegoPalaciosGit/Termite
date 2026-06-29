@@ -2,19 +2,22 @@ import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
 
 const STATUS_BADGE: Record<string, string> = {
-  en_proceso: 'bg-terra-light text-terra-text',
-  retrabajo:  'bg-rust-light text-rust',
-  terminado:  'bg-pine-light text-pine',
+  pendiente_aprobacion: 'bg-amber-light text-amber',
+  en_proceso:           'bg-terra-light text-terra-text',
+  retrabajo:            'bg-rust-light text-rust',
+  terminado:            'bg-pine-light text-pine',
 }
 const STATUS_LABEL: Record<string, string> = {
-  en_proceso: 'En proceso',
-  retrabajo:  'Retrabajo',
-  terminado:  'Terminado',
+  pendiente_aprobacion: 'Pendiente aprobación',
+  en_proceso:           'En proceso',
+  retrabajo:            'Retrabajo',
+  terminado:            'Terminado',
 }
 const STATUS_ORDER: Record<string, number> = {
-  retrabajo: 0,
-  en_proceso: 1,
-  terminado: 2,
+  pendiente_aprobacion: 0,
+  retrabajo:            1,
+  en_proceso:           2,
+  terminado:            3,
 }
 
 export default async function HojasPage() {
@@ -28,6 +31,8 @@ export default async function HojasPage() {
   const sorted = [...(hojas ?? [])].sort(
     (a, b) => (STATUS_ORDER[a.status] ?? 1) - (STATUS_ORDER[b.status] ?? 1)
   )
+
+  const pendientes = sorted.filter(h => h.status === 'pendiente_aprobacion')
 
   return (
     <>
@@ -43,6 +48,14 @@ export default async function HojasPage() {
           + Nueva orden
         </Link>
       </div>
+
+      {pendientes.length > 0 && (
+        <div className="bg-amber-light border border-amber/20 px-4 py-3 mb-4">
+          <p className="text-xs font-medium text-amber uppercase tracking-widest">
+            {pendientes.length} solicitud{pendientes.length !== 1 ? 'es' : ''} pendiente{pendientes.length !== 1 ? 's' : ''} de aprobación
+          </p>
+        </div>
+      )}
 
       {sorted.length === 0 ? (
         <div className="text-center py-16 text-dust border border-dashed border-warm">
@@ -77,8 +90,7 @@ export default async function HojasPage() {
                     <p className="text-xs text-dust uppercase tracking-widest">Entrega</p>
                     <p className="text-sm font-semibold text-bark">
                       {new Date(h.estimated_end_date).toLocaleDateString('es-MX', {
-                        month: 'short',
-                        day: 'numeric',
+                        month: 'short', day: 'numeric',
                       })}
                     </p>
                   </div>

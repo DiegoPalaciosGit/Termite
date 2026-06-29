@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { updateStatus, addStage, deleteStage } from '../actions'
+import { updateStatus, addStage, deleteStage, aprobarHoja } from '../actions'
 
 const STAGES: Record<string, string> = {
   corte:     'Corte (CNC / Sierra)',
@@ -11,14 +11,16 @@ const STAGES: Record<string, string> = {
   emplayado: 'Emplayado y Almacén',
 }
 const STATUS_BADGE: Record<string, string> = {
-  en_proceso: 'bg-terra-light text-terra-text',
-  retrabajo:  'bg-rust-light text-rust',
-  terminado:  'bg-pine-light text-pine',
+  pendiente_aprobacion: 'bg-amber-light text-amber',
+  en_proceso:           'bg-terra-light text-terra-text',
+  retrabajo:            'bg-rust-light text-rust',
+  terminado:            'bg-pine-light text-pine',
 }
 const STATUS_LABEL: Record<string, string> = {
-  en_proceso: 'En proceso',
-  retrabajo:  'Necesita corrección',
-  terminado:  'Terminado',
+  pendiente_aprobacion: 'Pendiente aprobación',
+  en_proceso:           'En proceso',
+  retrabajo:            'Necesita corrección',
+  terminado:            'Terminado',
 }
 
 function formatDuration(minutes: number | null) {
@@ -60,6 +62,8 @@ export default async function HojaDetailPage({ params }: { params: Promise<{ id:
 
   const clientName = (hoja.clients as { name: string } | null)?.name ?? 'Sin cliente'
   const stageList = (stages ?? []) as Stage[]
+  const isPendiente = hoja.status === 'pendiente_aprobacion'
+  const isTerminado = hoja.status === 'terminado'
 
   return (
     <>
@@ -93,7 +97,27 @@ export default async function HojaDetailPage({ params }: { params: Promise<{ id:
         </div>
       )}
 
-      {hoja.status !== 'terminado' && (
+      {/* Aprobar solicitud de cliente */}
+      {isPendiente && (
+        <div className="bg-amber-light border border-amber/20 p-4 mb-4">
+          <p className="text-xs font-medium text-amber uppercase tracking-widest mb-1">Solicitud de cliente</p>
+          <p className="text-sm text-bark mb-3">
+            Revisa los detalles, pacta precio y fecha con el cliente, luego aprueba para iniciar producción.
+          </p>
+          <form action={aprobarHoja} className="flex gap-2">
+            <input type="hidden" name="id" value={id} />
+            <button
+              type="submit"
+              className="bg-bark hover:bg-bark/80 text-white font-medium text-xs px-4 py-2 tracking-wide transition-colors"
+            >
+              Aprobar e iniciar producción
+            </button>
+          </form>
+        </div>
+      )}
+
+      {/* Cambiar estado (solo para órdenes activas no pendientes) */}
+      {!isPendiente && !isTerminado && (
         <div className="bg-white border border-warm p-4 mb-4">
           <p className="text-xs font-medium text-dust uppercase tracking-widest mb-3">Cambiar estado</p>
           <div className="flex gap-2 flex-wrap">
@@ -119,83 +143,87 @@ export default async function HojaDetailPage({ params }: { params: Promise<{ id:
         </div>
       )}
 
-      <div className="bg-white border border-warm p-4 mb-4">
-        <p className="text-xs font-medium text-dust uppercase tracking-widest mb-3">
-          Registro de avance{stageList.length > 0 && <span className="ml-2 text-dust font-normal normal-case tracking-normal">({stageList.length} etapa{stageList.length !== 1 ? 's' : ''})</span>}
-        </p>
-        {stageList.length === 0 ? (
-          <p className="text-sm text-dust">Sin etapas registradas todavía.</p>
-        ) : (
-          <div className="space-y-0">
-            {stageList.map(s => (
-              <div key={s.id} className="flex items-start justify-between gap-3 py-3 border-b border-warm/60 last:border-0">
-                <div className="min-w-0">
-                  <p className="text-sm font-medium text-bark">{STAGES[s.stage] ?? s.stage}</p>
-                  <p className="text-xs text-umber mt-0.5">
-                    {s.worker_name ?? 'Sin trabajador asignado'}
-                    {s.duration_minutes ? <span className="ml-2 text-dust">· {formatDuration(s.duration_minutes)}</span> : null}
-                  </p>
-                  {(s.started_at || s.finished_at) && (
-                    <p className="text-xs text-dust mt-0.5 font-mono">
-                      {formatDatetime(s.started_at)} → {formatDatetime(s.finished_at)}
-                    </p>
-                  )}
-                  {s.notes && <p className="text-xs text-dust mt-0.5 italic">{s.notes}</p>}
-                </div>
-                <form action={deleteStage} className="shrink-0">
-                  <input type="hidden" name="hoja_id" value={id} />
-                  <input type="hidden" name="stage_id" value={s.id} />
-                  <button
-                    type="submit"
-                    className="text-xs text-dust hover:text-rust transition-colors p-1"
-                    aria-label="Eliminar etapa"
-                  >
-                    ✕
-                  </button>
-                </form>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-
-      <div className="bg-white border border-warm p-4">
-        <p className="text-xs font-medium text-dust uppercase tracking-widest mb-4">Registrar etapa de producción</p>
-        <form action={addStage} className="space-y-4">
-          <input type="hidden" name="hoja_id" value={id} />
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-xs text-umber font-medium mb-2 uppercase tracking-widest">Etapa *</label>
-              <select name="stage" required className={inputCls}>
-                {Object.entries(STAGES).map(([key, label]) => (
-                  <option key={key} value={key}>{label}</option>
+      {/* Registro de avance (no mostrar si está pendiente) */}
+      {!isPendiente && (
+        <>
+          <div className="bg-white border border-warm p-4 mb-4">
+            <p className="text-xs font-medium text-dust uppercase tracking-widest mb-3">
+              Registro de avance
+              {stageList.length > 0 && (
+                <span className="ml-2 font-normal normal-case tracking-normal text-dust">
+                  ({stageList.length} etapa{stageList.length !== 1 ? 's' : ''})
+                </span>
+              )}
+            </p>
+            {stageList.length === 0 ? (
+              <p className="text-sm text-dust">Sin etapas registradas todavía.</p>
+            ) : (
+              <div>
+                {stageList.map(s => (
+                  <div key={s.id} className="flex items-start justify-between gap-3 py-3 border-b border-warm/60 last:border-0">
+                    <div className="min-w-0">
+                      <p className="text-sm font-medium text-bark">{STAGES[s.stage] ?? s.stage}</p>
+                      <p className="text-xs text-umber mt-0.5">
+                        {s.worker_name ?? 'Sin trabajador asignado'}
+                        {s.duration_minutes ? <span className="ml-2 text-dust">· {formatDuration(s.duration_minutes)}</span> : null}
+                      </p>
+                      {(s.started_at || s.finished_at) && (
+                        <p className="text-xs text-dust mt-0.5 font-mono">
+                          {formatDatetime(s.started_at)} → {formatDatetime(s.finished_at)}
+                        </p>
+                      )}
+                      {s.notes && <p className="text-xs text-dust mt-0.5 italic">{s.notes}</p>}
+                    </div>
+                    <form action={deleteStage} className="shrink-0">
+                      <input type="hidden" name="hoja_id" value={id} />
+                      <input type="hidden" name="stage_id" value={s.id} />
+                      <button type="submit" className="text-xs text-dust hover:text-rust transition-colors p-1" aria-label="Eliminar etapa">✕</button>
+                    </form>
+                  </div>
                 ))}
-              </select>
-            </div>
-            <div>
-              <label className="block text-xs text-umber font-medium mb-2 uppercase tracking-widest">Trabajador</label>
-              <input name="worker_name" placeholder="Nombre del trabajador" className={inputCls} />
-            </div>
+              </div>
+            )}
           </div>
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-xs text-umber font-medium mb-2 uppercase tracking-widest">Inicio</label>
-              <input name="started_at" type="datetime-local" className={inputCls} />
-            </div>
-            <div>
-              <label className="block text-xs text-umber font-medium mb-2 uppercase tracking-widest">Fin</label>
-              <input name="finished_at" type="datetime-local" className={inputCls} />
-            </div>
+
+          <div className="bg-white border border-warm p-4">
+            <p className="text-xs font-medium text-dust uppercase tracking-widest mb-4">Registrar etapa de producción</p>
+            <form action={addStage} className="space-y-4">
+              <input type="hidden" name="hoja_id" value={id} />
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs text-umber font-medium mb-2 uppercase tracking-widest">Etapa *</label>
+                  <select name="stage" required className={inputCls}>
+                    {Object.entries(STAGES).map(([key, label]) => (
+                      <option key={key} value={key}>{label}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs text-umber font-medium mb-2 uppercase tracking-widest">Trabajador</label>
+                  <input name="worker_name" placeholder="Nombre del trabajador" className={inputCls} />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs text-umber font-medium mb-2 uppercase tracking-widest">Inicio</label>
+                  <input name="started_at" type="datetime-local" className={inputCls} />
+                </div>
+                <div>
+                  <label className="block text-xs text-umber font-medium mb-2 uppercase tracking-widest">Fin</label>
+                  <input name="finished_at" type="datetime-local" className={inputCls} />
+                </div>
+              </div>
+              <div>
+                <label className="block text-xs text-umber font-medium mb-2 uppercase tracking-widest">Notas</label>
+                <input name="notes" placeholder="Observaciones opcionales" className={inputCls} />
+              </div>
+              <button type="submit" className="w-full bg-terra hover:bg-terra-dark text-white font-medium py-2.5 px-4 text-sm tracking-wide transition-colors">
+                Guardar etapa
+              </button>
+            </form>
           </div>
-          <div>
-            <label className="block text-xs text-umber font-medium mb-2 uppercase tracking-widest">Notas</label>
-            <input name="notes" placeholder="Observaciones opcionales" className={inputCls} />
-          </div>
-          <button type="submit" className="w-full bg-terra hover:bg-terra-dark text-white font-medium py-2.5 px-4 text-sm tracking-wide transition-colors">
-            Guardar etapa
-          </button>
-        </form>
-      </div>
+        </>
+      )}
     </>
   )
 }

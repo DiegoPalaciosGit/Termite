@@ -74,6 +74,21 @@ export async function updateStatus(formData: FormData) {
   redirect(`/hojas/${id}`)
 }
 
+export async function aprobarHoja(formData: FormData) {
+  const supabase = await createClient()
+  const id = formData.get('id') as string
+
+  await supabase
+    .from('hojas_viajeras')
+    .update({ status: 'en_proceso' })
+    .eq('id', id)
+    .eq('status', 'pendiente_aprobacion')
+
+  revalidatePath(`/hojas/${id}`)
+  revalidatePath('/hojas')
+  redirect(`/hojas/${id}`)
+}
+
 export async function addStage(formData: FormData) {
   const supabase = await createClient()
   const hojaId = formData.get('hoja_id') as string

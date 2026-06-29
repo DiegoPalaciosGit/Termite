@@ -1,6 +1,8 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
+const WORKER_BLOCKED = ['/costos', '/clientes', '/usuarios']
+
 export async function proxy(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request })
 
@@ -9,9 +11,7 @@ export async function proxy(request: NextRequest) {
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
-        getAll() {
-          return request.cookies.getAll()
-        },
+        getAll() { return request.cookies.getAll() },
         setAll(cookiesToSet) {
           cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
           supabaseResponse = NextResponse.next({ request })
@@ -26,14 +26,27 @@ export async function proxy(request: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser()
 
   const path = request.nextUrl.pathname
-  const isLoginPage = path === '/login'
-  const isRoot = path === '/'
+  const isPublic = path === '/login' || path === '/' || path === '/set-password'
+  const role = (user?.user_metadata?.role as string) ?? 'worker'
 
-  if (!user && !isLoginPage && !isRoot) {
+  // Sin sesión → login
+  if (!user && !isPublic) {
     return NextResponse.redirect(new URL('/login', request.url))
   }
 
-  if (user && (isLoginPage || isRoot)) {
+  // Con sesión en página pública → redirect según rol
+  if (user && isPublic) {
+    const dest = role === 'cliente' ? '/portal' : '/dashboard'
+    return NextResponse.redirect(new URL(dest, request.url))
+  }
+
+  // Cliente solo puede acceder a /portal/*
+  if (user && role === 'cliente' && !path.startsWith('/portal')) {
+    return NextResponse.redirect(new URL('/portal', request.url))
+  }
+
+  // Worker bloqueado de rutas admin
+  if (user && role === 'worker' && WORKER_BLOCKED.some(p => path.startsWith(p))) {
     return NextResponse.redirect(new URL('/dashboard', request.url))
   }
 

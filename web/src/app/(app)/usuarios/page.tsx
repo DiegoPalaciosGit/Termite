@@ -4,6 +4,12 @@ import DeleteUserButton from './DeleteUserButton'
 
 const inputCls = 'w-full border border-warm bg-white text-bark text-sm px-3 py-2.5 focus:outline-none focus:border-terra transition-colors placeholder:text-dust'
 
+const ROLE_LABEL: Record<string, string> = {
+  admin:   'Admin',
+  worker:  'Trabajador',
+  cliente: 'Cliente',
+}
+
 export default async function UsuariosPage({
   searchParams,
 }: {
@@ -45,6 +51,14 @@ export default async function UsuariosPage({
               <input name="email" type="email" required maxLength={255} placeholder="juan@escobar.com" className={inputCls} />
             </div>
           </div>
+          <div>
+            <label className="block text-xs font-medium text-umber uppercase tracking-widest mb-2">Rol *</label>
+            <select name="role" required className={inputCls}>
+              <option value="worker">Trabajador — ve Panel, Órdenes, Inventario</option>
+              <option value="admin">Admin — acceso completo</option>
+              <option value="cliente">Cliente — portal de pedidos</option>
+            </select>
+          </div>
           <button type="submit" className="w-full bg-terra hover:bg-terra-dark text-white font-medium py-2.5 px-4 text-sm tracking-wide transition-colors">
             Enviar invitación
           </button>
@@ -52,26 +66,32 @@ export default async function UsuariosPage({
       </div>
 
       <div className="space-y-px">
-        {usuarios.map(u => (
-          <div key={u.id} className="bg-white border border-warm px-4 py-3">
-            <div className="flex items-center justify-between gap-3">
-              <div className="min-w-0">
-                <p className="font-medium text-bark truncate">
-                  {(u.user_metadata?.nombre as string) ?? u.email?.split('@')[0]}
-                </p>
-                <p className="text-sm text-dust">{u.email}</p>
-              </div>
-              <div className="flex items-center gap-3 shrink-0">
-                <span className={`text-xs px-1.5 py-0.5 rounded font-medium ${
-                  u.email_confirmed_at ? 'bg-pine-light text-pine' : 'bg-amber-light text-amber'
-                }`}>
-                  {u.email_confirmed_at ? 'Activo' : 'Pendiente'}
-                </span>
-                <DeleteUserButton userId={u.id} email={u.email ?? ''} />
+        {usuarios.map(u => {
+          const role = (u.user_metadata?.role as string) ?? 'worker'
+          return (
+            <div key={u.id} className="bg-white border border-warm px-4 py-3">
+              <div className="flex items-center justify-between gap-3">
+                <div className="min-w-0">
+                  <p className="font-medium text-bark truncate">
+                    {(u.user_metadata?.nombre as string) ?? u.email?.split('@')[0]}
+                  </p>
+                  <p className="text-xs text-dust">{u.email}</p>
+                </div>
+                <div className="flex items-center gap-2 shrink-0">
+                  <span className="text-xs px-1.5 py-0.5 bg-warm text-umber font-medium">
+                    {ROLE_LABEL[role] ?? role}
+                  </span>
+                  <span className={`text-xs px-1.5 py-0.5 rounded font-medium ${
+                    u.email_confirmed_at ? 'bg-pine-light text-pine' : 'bg-amber-light text-amber'
+                  }`}>
+                    {u.email_confirmed_at ? 'Activo' : 'Pendiente'}
+                  </span>
+                  <DeleteUserButton userId={u.id} email={u.email ?? ''} />
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          )
+        })}
       </div>
     </>
   )
