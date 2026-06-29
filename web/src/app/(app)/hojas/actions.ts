@@ -80,7 +80,7 @@ export async function aprobarHoja(formData: FormData) {
 
   await supabase
     .from('hojas_viajeras')
-    .update({ status: 'en_proceso' })
+    .update({ status: 'en_proceso', approved_at: new Date().toISOString() })
     .eq('id', id)
     .eq('status', 'pendiente_aprobacion')
 

@@ -9,6 +9,7 @@ type Hoja = {
   quantity: number
   status: string
   estimated_end_date: string | null
+  approved_at: string | null
 }
 
 const ETAPAS = [
@@ -56,7 +57,7 @@ export default async function PortalPage() {
   // Obtener pedidos del cliente
   const { data: hojas } = await supabase
     .from('hojas_viajeras')
-    .select('id, folio, product_name, quantity, status, estimated_end_date')
+    .select('id, folio, product_name, quantity, status, estimated_end_date, approved_at')
     .eq('client_id', cliente?.id ?? '')
     .order('created_at', { ascending: false })
 
@@ -107,6 +108,13 @@ export default async function PortalPage() {
                         <div className="min-w-0">
                           <p className="font-medium text-bark truncate">{h.product_name}</p>
                           <p className="text-xs text-dust mt-0.5 font-mono">{h.folio} · ×{h.quantity}</p>
+                          {h.approved_at && etapa.key !== 'pendiente' && (
+                            <p className="text-xs text-dust mt-0.5">
+                              Aprobado: {new Date(h.approved_at).toLocaleDateString('es-MX', {
+                                day: 'numeric', month: 'short', year: 'numeric',
+                              })}
+                            </p>
+                          )}
                         </div>
                         {h.estimated_end_date && (
                           <div className="text-right shrink-0">
