@@ -2,19 +2,8 @@ import { login } from './actions'
 
 function TermiteLogo() {
   return (
-    <svg
-      width="48"
-      height="58"
-      viewBox="0 0 44 54"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      aria-hidden="true"
-    >
-      <polygon points="6,2 13,2 19,20 12,20" stroke="#3B2A1A" strokeWidth="2.5"/>
-      <polygon points="38,2 31,2 25,20 32,20" stroke="#3B2A1A" strokeWidth="2.5"/>
-      <circle cx="22" cy="27" r="6.5" stroke="#3B2A1A" strokeWidth="2.5"/>
-      <circle cx="22" cy="43" r="11" stroke="#3B2A1A" strokeWidth="2.5"/>
-    </svg>
+    // eslint-disable-next-line @next/next/no-img-element
+    <img src="/logo.jpg" alt="Termite" width={56} height={56} style={{ objectFit: 'contain' }} />
   )
 }
 
