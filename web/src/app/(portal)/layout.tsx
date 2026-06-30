@@ -5,7 +5,7 @@ import { logout } from '@/app/login/actions'
 function TermiteLogo() {
   return (
     // eslint-disable-next-line @next/next/no-img-element
-    <img src="/termita.png" alt="Termite" width={24} height={24} style={{ objectFit: 'contain' }} />
+    <img src="/termita.png" alt="Termite" width={24} height={24} style={{ objectFit: 'contain', mixBlendMode: 'multiply' }} />
   )
 }
 
