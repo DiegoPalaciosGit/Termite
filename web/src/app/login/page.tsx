@@ -3,17 +3,17 @@ import { login } from './actions'
 function TermiteLogo() {
   return (
     <svg
-      width="44"
-      height="56"
-      viewBox="0 0 40 50"
+      width="48"
+      height="58"
+      viewBox="0 0 44 54"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       aria-hidden="true"
     >
-      <line x1="14" y1="15" x2="2" y2="3" stroke="#3B2A1A" strokeWidth="3.5" strokeLinecap="round"/>
-      <line x1="26" y1="15" x2="38" y2="3" stroke="#3B2A1A" strokeWidth="3.5" strokeLinecap="round"/>
-      <circle cx="20" cy="21" r="7.5" stroke="#3B2A1A" strokeWidth="3.5"/>
-      <circle cx="20" cy="37" r="11.5" stroke="#3B2A1A" strokeWidth="3.5"/>
+      <polygon points="10,3 19,20 12,20 3,3" stroke="#3B2A1A" strokeWidth="2" strokeLinejoin="round"/>
+      <polygon points="34,3 25,20 32,20 41,3" stroke="#3B2A1A" strokeWidth="2" strokeLinejoin="round"/>
+      <circle cx="22" cy="27" r="6.5" stroke="#3B2A1A" strokeWidth="2.5"/>
+      <circle cx="22" cy="43" r="11" stroke="#3B2A1A" strokeWidth="2.5"/>
     </svg>
   )
 }
