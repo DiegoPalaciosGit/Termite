@@ -5,12 +5,8 @@ import AppNav from '@/app/ui/AppNav'
 
 function TermiteLogo() {
   return (
-    <svg width="30" height="35" viewBox="0 0 100 118" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" className="text-bark">
-      <polygon points="15,4 29,4 45,44 31,44" stroke="currentColor" strokeWidth="3" strokeLinejoin="round"/>
-      <polygon points="85,4 71,4 55,44 69,44" stroke="currentColor" strokeWidth="3" strokeLinejoin="round"/>
-      <circle cx="50" cy="60" r="14" stroke="currentColor" strokeWidth="3"/>
-      <circle cx="50" cy="96" r="22" stroke="currentColor" strokeWidth="3"/>
-    </svg>
+    // eslint-disable-next-line @next/next/no-img-element
+    <img src="/termita.png" alt="Termite" width={30} height={35} style={{ objectFit: 'contain', mixBlendMode: 'multiply' }} />
   )
 }
 
