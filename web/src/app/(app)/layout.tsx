@@ -14,10 +14,10 @@ function TermiteLogo({ className = '' }: { className?: string }) {
       aria-hidden="true"
       className={className}
     >
-      <polygon points="10,3 19,20 12,20 3,3" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/>
-      <polygon points="34,3 25,20 32,20 41,3" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/>
-      <circle cx="22" cy="27" r="6.5" stroke="currentColor" strokeWidth="2.5"/>
-      <circle cx="22" cy="43" r="11" stroke="currentColor" strokeWidth="2.5"/>
+      <polygon points="6,2 13,2 19,20 12,20" stroke="currentColor" strokeWidth="3"/>
+      <polygon points="38,2 31,2 25,20 32,20" stroke="currentColor" strokeWidth="3"/>
+      <circle cx="22" cy="27" r="6.5" stroke="currentColor" strokeWidth="3"/>
+      <circle cx="22" cy="43" r="11" stroke="currentColor" strokeWidth="3"/>
     </svg>
   )
 }
