@@ -3,7 +3,7 @@ import { login } from './actions'
 function TermiteLogo() {
   return (
     // eslint-disable-next-line @next/next/no-img-element
-    <img src="/termita.svg" alt="Termite" width={140} height={140} />
+    <img src="/termita.svg" alt="Termite" width={180} height={180} />
   )
 }
 
@@ -14,7 +14,7 @@ export default function LoginPage() {
     <div className="min-h-dvh bg-linen flex items-center justify-center p-6">
       <div className="w-full max-w-xs">
         <div className="mb-12 text-center">
-          <div className="flex justify-center mb-6">
+          <div className="flex justify-center mb-6 mt-8">
             <TermiteLogo />
           </div>
           <h1 className="text-lg font-semibold text-bark tracking-tight">termite</h1>
