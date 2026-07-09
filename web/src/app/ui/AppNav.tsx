@@ -79,7 +79,7 @@ export default function AppNav({ role }: { role: string }) {
 
   return (
     <nav className="bg-white border-b border-warm overflow-x-auto" style={{ scrollbarWidth: 'none' }} aria-label="Navegación principal">
-      <div className="flex min-w-max max-w-2xl mx-auto px-2">
+      <div className="flex max-w-2xl mx-auto px-2">
         {links.map(({ href, label, icon }) => {
           const active = pathname.startsWith(href)
           return (
