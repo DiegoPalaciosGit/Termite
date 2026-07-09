@@ -27,13 +27,28 @@ export default function NuevoClientePage() {
           <input name="email" type="email" maxLength={255} placeholder="contacto@cliente.com" className={inputCls} />
         </div>
 
+        <div className="border border-warm bg-linen px-4 py-3 flex items-start gap-3">
+          <input
+            type="checkbox"
+            name="invite_portal"
+            id="invite_portal"
+            className="mt-0.5 accent-terra shrink-0"
+          />
+          <label htmlFor="invite_portal" className="text-sm text-bark cursor-pointer leading-snug">
+            Invitar al portal de clientes
+            <span className="block text-xs text-dust mt-0.5">
+              El cliente recibirá un correo para crear su contraseña y ver sus pedidos. Requiere correo.
+            </span>
+          </label>
+        </div>
+
         <div>
           <label className="block text-xs font-medium text-umber uppercase tracking-widest mb-2">Notas</label>
           <textarea name="notes" rows={2} placeholder="Dirección, referencias, etc." className={`${inputCls} resize-none`} />
         </div>
 
         <button type="submit" className="w-full bg-terra hover:bg-terra-dark text-white font-medium py-2.5 px-4 text-sm tracking-wide transition-colors">
-          Crear Cliente
+          Guardar cliente
         </button>
       </form>
     </>

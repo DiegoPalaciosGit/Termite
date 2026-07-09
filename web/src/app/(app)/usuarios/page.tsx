@@ -30,7 +30,7 @@ export default async function UsuariosPage({
 
       {ok && (
         <div className="bg-pine-light border border-pine/20 px-4 py-3 mb-4 text-sm text-pine font-medium">
-          Invitación enviada. El usuario recibirá un correo para crear su contraseña.
+          Colaborador agregado. Recibirá un correo para crear su contraseña.
         </div>
       )}
       {error && (
@@ -60,7 +60,7 @@ export default async function UsuariosPage({
             </select>
           </div>
           <button type="submit" className="w-full bg-terra hover:bg-terra-dark text-white font-medium py-2.5 px-4 text-sm tracking-wide transition-colors">
-            Enviar invitación
+            Agregar al equipo
           </button>
         </form>
       </div>

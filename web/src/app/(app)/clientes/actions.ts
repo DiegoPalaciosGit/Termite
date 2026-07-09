@@ -8,13 +8,33 @@ import { redirect } from 'next/navigation'
 export async function createCliente(formData: FormData) {
   const supabase = await createClient()
   const taller_id = await requireAdmin()
-  await supabase.from('clients').insert({
+  const email = (formData.get('email') as string).trim() || null
+
+  const { data: newClient } = await supabase.from('clients').insert({
     name:  (formData.get('name') as string).trim(),
     phone: (formData.get('phone') as string).trim() || null,
-    email: (formData.get('email') as string).trim() || null,
+    email,
     notes: (formData.get('notes') as string).trim() || null,
     taller_id,
-  })
+  }).select('id').single()
+
+  const invitePortal = formData.get('invite_portal') === 'on'
+  if (invitePortal && email && newClient) {
+    const admin = createAdminClient()
+    const { data, error } = await admin.auth.admin.inviteUserByEmail(email, {
+      data: { role: 'client' },
+      redirectTo: 'https://mangle-termite.vercel.app/set-password',
+    })
+    if (!error && data) {
+      await admin.from('profiles').upsert({
+        user_id: data.user.id,
+        taller_id,
+        role: 'client',
+      }, { onConflict: 'user_id' })
+      await admin.from('clients').update({ user_id: data.user.id }).eq('id', newClient.id)
+    }
+  }
+
   revalidatePath('/clientes')
   redirect('/clientes')
 }
