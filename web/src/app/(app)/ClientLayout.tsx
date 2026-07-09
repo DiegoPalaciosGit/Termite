@@ -137,7 +137,7 @@ export default function ClientLayout({ role, children }: { role: string; childre
           <form action={logout}>
             <button
               type="submit"
-              className="text-5xl font-bold text-dust hover:text-bark transition-colors uppercase tracking-widest"
+              className="text-xl font-bold text-dust hover:text-bark transition-colors uppercase tracking-widest"
             >
               Cerrar sesión
             </button>
@@ -166,7 +166,7 @@ export default function ClientLayout({ role, children }: { role: string; childre
         <form action={logout}>
           <button
             type="submit"
-            className="text-5xl font-bold text-dust hover:text-bark transition-colors uppercase tracking-widest"
+            className="text-xl font-bold text-dust hover:text-bark transition-colors uppercase tracking-widest"
           >
             Salir
           </button>
