@@ -1,7 +1,6 @@
 'use server'
 import { createAdminClient } from '@/lib/supabase/admin'
-import { createClient } from '@/lib/supabase/server'
-import { getTallerId } from '@/lib/supabase/taller'
+import { requireAdmin } from '@/lib/supabase/taller'
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 
@@ -24,7 +23,7 @@ export async function inviteUsuario(formData: FormData) {
   const nombre = (formData.get('nombre') as string).trim()
   const role = (formData.get('role') as string) || 'worker'
 
-  const taller_id = await getTallerId()
+  const taller_id = await requireAdmin()
   const admin = createAdminClient()
 
   const { data, error } = await admin.auth.admin.inviteUserByEmail(email, {
@@ -45,6 +44,7 @@ export async function inviteUsuario(formData: FormData) {
 }
 
 export async function deleteUsuario(formData: FormData) {
+  await requireAdmin()
   const userId = formData.get('user_id') as string
   const admin = createAdminClient()
   await admin.auth.admin.deleteUser(userId)

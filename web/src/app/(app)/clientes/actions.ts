@@ -1,12 +1,12 @@
 'use server'
 import { createClient } from '@/lib/supabase/server'
-import { getTallerId } from '@/lib/supabase/taller'
+import { requireAdmin } from '@/lib/supabase/taller'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
 export async function createCliente(formData: FormData) {
   const supabase = await createClient()
-  const taller_id = await getTallerId()
+  const taller_id = await requireAdmin()
   await supabase.from('clients').insert({
     name:  (formData.get('name') as string).trim(),
     phone: (formData.get('phone') as string).trim() || null,
@@ -19,6 +19,7 @@ export async function createCliente(formData: FormData) {
 }
 
 export async function updateCliente(formData: FormData) {
+  await requireAdmin()
   const supabase = await createClient()
   const id = formData.get('id') as string
   await supabase.from('clients').update({

@@ -1,6 +1,6 @@
 'use server'
 import { createClient } from '@/lib/supabase/server'
-import { getTallerId } from '@/lib/supabase/taller'
+import { requireWorkerOrAbove } from '@/lib/supabase/taller'
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 
@@ -9,7 +9,7 @@ const VALID_STATUSES = ['en_proceso', 'retrabajo', 'terminado'] as const
 
 export async function createHoja(formData: FormData) {
   const supabase = await createClient()
-  const taller_id = await getTallerId()
+  const { taller_id } = await requireWorkerOrAbove()
 
   const year = new Date().getFullYear()
   const { count } = await supabase
@@ -94,7 +94,7 @@ export async function aprobarHoja(formData: FormData) {
 
 export async function addStage(formData: FormData) {
   const supabase = await createClient()
-  const taller_id = await getTallerId()
+  const { taller_id } = await requireWorkerOrAbove()
   const hojaId = formData.get('hoja_id') as string
   const stage = formData.get('stage') as string
 

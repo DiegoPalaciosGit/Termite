@@ -1,6 +1,6 @@
 'use server'
 import { createClient } from '@/lib/supabase/server'
-import { getTallerId } from '@/lib/supabase/taller'
+import { requireAdmin } from '@/lib/supabase/taller'
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 
@@ -15,7 +15,7 @@ function calcularSemaforo(salePrice: number, estimatedCost: number, minMargin: n
 
 export async function createProducto(formData: FormData) {
   const supabase = await createClient()
-  const taller_id = await getTallerId()
+  const taller_id = await requireAdmin()
 
   const { data: config } = await supabase.from('shop_config').select('min_margin_pct').single()
   const minMargin = Number(config?.min_margin_pct ?? 35)
@@ -38,6 +38,7 @@ export async function createProducto(formData: FormData) {
 }
 
 export async function updateProducto(formData: FormData) {
+  await requireAdmin()
   const supabase = await createClient()
   const id = formData.get('id') as string
 
@@ -60,6 +61,7 @@ export async function updateProducto(formData: FormData) {
 }
 
 export async function updateConfig(formData: FormData) {
+  await requireAdmin()
   const supabase = await createClient()
 
   const { data: config } = await supabase.from('shop_config').select('id').single()
