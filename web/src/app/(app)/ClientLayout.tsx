@@ -10,7 +10,7 @@ const ALL_LINKS = [
     label: 'Panel',
     roles: ['admin', 'worker'],
     icon: (
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
         <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
         <rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>
       </svg>
@@ -21,7 +21,7 @@ const ALL_LINKS = [
     label: 'Órdenes',
     roles: ['admin', 'worker'],
     icon: (
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
         <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
         <rect x="8" y="2" width="8" height="4" rx="1" ry="1"/>
         <line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/>
@@ -33,7 +33,7 @@ const ALL_LINKS = [
     label: 'Inventario',
     roles: ['admin', 'worker'],
     icon: (
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
         <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
       </svg>
     ),
@@ -43,7 +43,7 @@ const ALL_LINKS = [
     label: 'Rentabilidad',
     roles: ['admin'],
     icon: (
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
         <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/>
         <polyline points="16 7 22 7 22 13"/>
       </svg>
@@ -54,7 +54,7 @@ const ALL_LINKS = [
     label: 'Clientes',
     roles: ['admin'],
     icon: (
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
         <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
         <circle cx="9" cy="7" r="4"/>
         <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
@@ -66,7 +66,7 @@ const ALL_LINKS = [
     label: 'Equipo',
     roles: ['admin'],
     icon: (
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
         <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
         <circle cx="8.5" cy="7" r="4"/>
         <line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/>
@@ -97,21 +97,19 @@ export default function ClientLayout({ role, children }: { role: string; childre
         className={`fixed inset-y-0 left-0 w-60 bg-white border-r border-warm z-50 flex flex-col transition-transform duration-200 ease-in-out ${open ? 'translate-x-0' : '-translate-x-full'}`}
         aria-label="Menú lateral"
       >
-        <div className="flex items-center justify-between pl-14 pr-4 py-4 border-b border-warm">
-          <div className="flex items-center gap-3">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/termita.svg" alt="Termite" width={44} height={44} />
-            <span className="font-bold text-xl text-bark tracking-tight">termite</span>
-          </div>
+        <div className="flex items-center px-4 py-4 gap-3 border-b border-warm">
           <button
             onClick={() => setOpen(false)}
-            className="text-dust hover:text-bark transition-colors p-1"
+            className="text-umber hover:text-bark transition-colors p-1 -ml-1 shrink-0"
             aria-label="Cerrar menú"
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
               <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
             </svg>
           </button>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/termita.svg" alt="Termite" width={44} height={44} />
+          <span className="font-bold text-xl text-bark tracking-tight">termite</span>
         </div>
 
         <nav className="flex-1 py-2 overflow-y-auto">
@@ -122,7 +120,7 @@ export default function ClientLayout({ role, children }: { role: string; childre
                 key={href}
                 href={href}
                 onClick={() => setOpen(false)}
-                className={`flex items-center gap-3 px-4 py-3 text-sm font-medium transition-colors border-l-2 ${
+                className={`flex items-center gap-4 px-4 py-3.5 text-base font-medium transition-colors border-l-2 ${
                   active
                     ? 'border-terra text-bark bg-terra-light/50'
                     : 'border-transparent text-umber hover:text-bark hover:bg-linen'
