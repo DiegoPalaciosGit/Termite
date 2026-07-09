@@ -148,22 +148,22 @@ export default function ClientLayout({ role, children }: { role: string; childre
       </aside>
 
       {/* Header */}
-      <header className="bg-white border-b border-warm px-4 py-3 flex items-center justify-between sticky top-0 z-30">
+      <header className="bg-white border-b border-warm px-4 py-4 flex items-center justify-between sticky top-0 z-30">
         <div className="flex items-center gap-3">
           <button
             onClick={() => setOpen(true)}
             className="text-umber hover:text-bark transition-colors p-1 -ml-1"
             aria-label="Abrir menú"
           >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
               <line x1="3" y1="6" x2="21" y2="6"/>
               <line x1="3" y1="12" x2="21" y2="12"/>
               <line x1="3" y1="18" x2="21" y2="18"/>
             </svg>
           </button>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/termita.png" alt="Termite" width={26} height={30} style={{ objectFit: 'contain', mixBlendMode: 'multiply' }} />
-          <span className="font-semibold text-sm text-bark tracking-tight">termite</span>
+          <img src="/termita.svg" alt="Termite" width={44} height={44} />
+          <span className="font-bold text-xl text-bark tracking-tight">termite</span>
         </div>
         <form action={logout}>
           <button
