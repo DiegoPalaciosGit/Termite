@@ -1,6 +1,6 @@
 import { createClient } from './server'
 
-export type UserRole = 'admin' | 'worker' | 'viewer'
+export type UserRole = 'admin' | 'worker' | 'viewer' | 'client'
 
 export async function getProfile(): Promise<{ taller_id: string; role: UserRole }> {
   const supabase = await createClient()

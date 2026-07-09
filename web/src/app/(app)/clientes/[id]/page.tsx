@@ -1,6 +1,9 @@
 import { createClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
+import { inviteCliente } from '../actions'
+
+const inputCls = 'flex-1 border border-warm bg-white text-bark text-sm px-3 py-2.5 focus:outline-none focus:border-terra transition-colors placeholder:text-dust'
 
 const STATUS_BADGE: Record<string, string> = {
   en_proceso: 'bg-terra-light text-terra-text',
@@ -13,8 +16,15 @@ const STATUS_LABEL: Record<string, string> = {
   terminado:  'Terminado',
 }
 
-export default async function ClienteDetailPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function ClienteDetailPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ id: string }>
+  searchParams: Promise<{ ok?: string; error?: string }>
+}) {
   const { id } = await params
+  const { ok, error } = await searchParams
   const supabase = await createClient()
 
   const [{ data: cliente }, { data: hojas }] = await Promise.all([
@@ -53,6 +63,45 @@ export default async function ClienteDetailPage({ params }: { params: Promise<{ 
           {cliente.notes}
         </div>
       )}
+
+      {/* Portal de cliente */}
+      {ok === 'invited' && (
+        <div className="bg-pine-light border border-pine/20 px-4 py-3 mb-4 text-sm text-pine font-medium">
+          Invitación enviada. El cliente recibirá un correo para crear su contraseña.
+        </div>
+      )}
+      {error && (
+        <div className="bg-rust-light border border-rust/20 px-4 py-3 mb-4 text-sm text-rust">
+          {error}
+        </div>
+      )}
+
+      <div className="bg-white border border-warm p-4 mb-4">
+        <p className="text-xs font-medium text-dust uppercase tracking-widest mb-3">Portal de cliente</p>
+        {cliente.user_id ? (
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-pine inline-block" />
+            <span className="text-sm text-bark">Acceso activo al portal</span>
+          </div>
+        ) : (
+          <form action={inviteCliente} className="flex gap-2">
+            <input type="hidden" name="client_id" value={id} />
+            <input
+              name="email"
+              type="email"
+              required
+              placeholder="correo@cliente.com"
+              className={inputCls}
+            />
+            <button
+              type="submit"
+              className="bg-terra hover:bg-terra-dark text-white font-medium py-2.5 px-4 text-sm tracking-wide transition-colors shrink-0"
+            >
+              Invitar
+            </button>
+          </form>
+        )}
+      </div>
 
       <div className="bg-white border border-warm p-4 mb-4">
         <div className="flex items-center justify-between mb-3">

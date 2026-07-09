@@ -72,7 +72,14 @@ export default function SetPasswordPage() {
     setError('')
     const { error } = await supabase.auth.updateUser({ password })
     if (error) { setError(error.message); setLoading(false); return }
-    router.push('/dashboard')
+    const { data: { user } } = await supabase.auth.getUser()
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('user_id', user!.id)
+      .single()
+    if (profile?.role === 'client') router.push('/portal')
+    else router.push('/dashboard')
   }
 
   const inputCls = 'w-full px-0 py-2.5 border-0 border-b border-warm bg-transparent text-bark text-sm focus:outline-none focus:border-bark transition-colors placeholder:text-dust'

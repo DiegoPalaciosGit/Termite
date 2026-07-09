@@ -7,7 +7,8 @@ const inputCls = 'w-full border border-warm bg-white text-bark text-sm px-3 py-2
 const ROLE_LABEL: Record<string, string> = {
   admin:   'Admin',
   worker:  'Trabajador',
-  cliente: 'Cliente',
+  viewer:  'Viewer',
+  client:  'Cliente',
 }
 
 export default async function UsuariosPage({
@@ -56,7 +57,6 @@ export default async function UsuariosPage({
             <select name="role" required className={inputCls}>
               <option value="worker">Trabajador — ve Panel, Órdenes, Inventario</option>
               <option value="admin">Admin — acceso completo</option>
-              <option value="cliente">Cliente — portal de pedidos</option>
             </select>
           </div>
           <button type="submit" className="w-full bg-terra hover:bg-terra-dark text-white font-medium py-2.5 px-4 text-sm tracking-wide transition-colors">

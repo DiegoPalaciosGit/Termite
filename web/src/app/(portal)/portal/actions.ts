@@ -1,5 +1,6 @@
 'use server'
 import { createClient } from '@/lib/supabase/server'
+import { getTallerId } from '@/lib/supabase/taller'
 import { redirect } from 'next/navigation'
 
 export async function crearSolicitud(formData: FormData) {
@@ -7,12 +8,13 @@ export async function crearSolicitud(formData: FormData) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  // Buscar el registro de cliente vinculado al usuario
   const { data: cliente } = await supabase
     .from('clients')
     .select('id')
     .eq('user_id', user.id)
     .single()
+
+  const taller_id = await getTallerId()
 
   const year = new Date().getFullYear()
   const { count } = await supabase
@@ -29,6 +31,7 @@ export async function crearSolicitud(formData: FormData) {
     client_id: cliente?.id ?? null,
     notes: (formData.get('notes') as string) || null,
     status: 'pendiente_aprobacion',
+    taller_id,
   })
 
   redirect('/portal')

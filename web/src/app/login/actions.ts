@@ -15,6 +15,14 @@ export async function login(formData: FormData) {
     redirect('/login?error=1')
   }
 
+  const { data: { user } } = await supabase.auth.getUser()
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('role')
+    .eq('user_id', user!.id)
+    .single()
+
+  if (profile?.role === 'client') redirect('/portal')
   redirect('/dashboard')
 }
 

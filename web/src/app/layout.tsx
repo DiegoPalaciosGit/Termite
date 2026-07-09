@@ -4,6 +4,15 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Termite",
   description: "Control de producción · Carpintería Escobar",
+  manifest: '/manifest.webmanifest',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'black-translucent',
+    title: 'Termite',
+  },
+  icons: {
+    apple: [{ url: '/termita.png', sizes: '180x180', type: 'image/png' }],
+  },
 };
 
 export default function RootLayout({

@@ -10,5 +10,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
     redirect('/login')
   }
 
+  if (profile.role === 'client') redirect('/portal')
+
   return <ClientLayout role={profile.role}>{children}</ClientLayout>
 }

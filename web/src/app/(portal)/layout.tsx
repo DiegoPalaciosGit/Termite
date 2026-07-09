@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server'
+import { getProfile } from '@/lib/supabase/taller'
 import { redirect } from 'next/navigation'
 import { logout } from '@/app/login/actions'
 
@@ -10,9 +10,14 @@ function TermiteLogo() {
 }
 
 export default async function PortalLayout({ children }: { children: React.ReactNode }) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/login')
+  let profile: { taller_id: string; role: string }
+  try {
+    profile = await getProfile()
+  } catch {
+    redirect('/login')
+  }
+
+  if (profile.role !== 'client') redirect('/dashboard')
 
   return (
     <div className="min-h-dvh bg-linen">
