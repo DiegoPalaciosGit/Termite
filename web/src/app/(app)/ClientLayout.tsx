@@ -100,7 +100,7 @@ export default function ClientLayout({ role, children }: { role: string; childre
         <div className="flex items-center justify-between px-4 py-3 border-b border-warm">
           <div className="flex items-center gap-2">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/termita.png" alt="Termite" width={26} height={30} style={{ objectFit: 'contain', mixBlendMode: 'multiply' }} />
+            <img src="/termita.svg" alt="Termite" width={28} height={28} />
             <span className="font-semibold text-sm text-bark tracking-tight">termite</span>
           </div>
           <button

@@ -3,7 +3,7 @@ import { login } from './actions'
 function TermiteLogo() {
   return (
     // eslint-disable-next-line @next/next/no-img-element
-    <img src="/termita.png" alt="Termite" width={140} height={165} style={{ objectFit: 'contain', mixBlendMode: 'multiply' }} />
+    <img src="/termita.svg" alt="Termite" width={140} height={140} />
   )
 }
 
