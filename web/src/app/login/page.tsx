@@ -7,7 +7,7 @@ function TermiteLogo() {
   )
 }
 
-const inputCls = 'w-full px-0 py-2.5 border-0 border-b border-warm bg-transparent text-bark text-sm focus:outline-none focus:border-bark transition-colors placeholder:text-dust'
+const inputCls = 'w-full px-0 py-2.5 border-0 border-b border-warm bg-transparent text-bark text-base focus:outline-none focus:border-bark transition-colors placeholder:text-dust'
 
 export default function LoginPage() {
   return (
