@@ -1,10 +1,12 @@
 'use server'
 import { createClient } from '@/lib/supabase/server'
+import { getTallerId } from '@/lib/supabase/taller'
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 
 export async function createMaterial(formData: FormData) {
   const supabase = await createClient()
+  const taller_id = await getTallerId()
 
   await supabase.from('materials').insert({
     code: formData.get('code') as string,
@@ -16,6 +18,7 @@ export async function createMaterial(formData: FormData) {
     stock_min: Number(formData.get('stock_min')) || 0,
     notes: (formData.get('notes') as string) || null,
     is_active: true,
+    taller_id,
   })
 
   redirect('/materiales')
@@ -65,6 +68,7 @@ export async function registrarEntrada(formData: FormData) {
     cost_unit: Math.round(nuevoCosto * 100) / 100,
   }).eq('id', id)
 
+  const taller_id = await getTallerId()
   await supabase.from('material_movements').insert({
     material_id: id,
     type: 'entrada',
@@ -73,6 +77,7 @@ export async function registrarEntrada(formData: FormData) {
     reference_type: 'manual',
     notes: (formData.get('notes') as string) || null,
     created_at: new Date().toISOString(),
+    taller_id,
   })
 
   revalidatePath(`/materiales/${id}`)
@@ -101,6 +106,7 @@ export async function registrarSalida(formData: FormData) {
     stock_current: stockActual - cantidad,
   }).eq('id', id)
 
+  const taller_id_salida = await getTallerId()
   await supabase.from('material_movements').insert({
     material_id: id,
     type: 'salida',
@@ -109,6 +115,7 @@ export async function registrarSalida(formData: FormData) {
     reference_type: (formData.get('reference_type') as string) || 'manual',
     notes: (formData.get('notes') as string) || null,
     created_at: new Date().toISOString(),
+    taller_id: taller_id_salida,
   })
 
   revalidatePath(`/materiales/${id}`)

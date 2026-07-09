@@ -1,5 +1,6 @@
 'use server'
 import { createClient } from '@/lib/supabase/server'
+import { getTallerId } from '@/lib/supabase/taller'
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 
@@ -14,6 +15,7 @@ function calcularSemaforo(salePrice: number, estimatedCost: number, minMargin: n
 
 export async function createProducto(formData: FormData) {
   const supabase = await createClient()
+  const taller_id = await getTallerId()
 
   const { data: config } = await supabase.from('shop_config').select('min_margin_pct').single()
   const minMargin = Number(config?.min_margin_pct ?? 35)
@@ -29,6 +31,7 @@ export async function createProducto(formData: FormData) {
     margin_status,
     notes: (formData.get('notes') as string) || null,
     is_active: true,
+    taller_id,
   })
 
   redirect('/costos')

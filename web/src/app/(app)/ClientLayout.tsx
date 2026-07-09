@@ -97,11 +97,11 @@ export default function ClientLayout({ role, children }: { role: string; childre
         className={`fixed inset-y-0 left-0 w-60 bg-white border-r border-warm z-50 flex flex-col transition-transform duration-200 ease-in-out ${open ? 'translate-x-0' : '-translate-x-full'}`}
         aria-label="Menú lateral"
       >
-        <div className="flex items-center justify-between px-4 py-3 border-b border-warm">
-          <div className="flex items-center gap-2">
+        <div className="flex items-center justify-between px-4 py-4 border-b border-warm">
+          <div className="flex items-center gap-3">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/termita.svg" alt="Termite" width={28} height={28} />
-            <span className="font-semibold text-sm text-bark tracking-tight">termite</span>
+            <img src="/termita.svg" alt="Termite" width={44} height={44} />
+            <span className="font-bold text-xl text-bark tracking-tight">termite</span>
           </div>
           <button
             onClick={() => setOpen(false)}
