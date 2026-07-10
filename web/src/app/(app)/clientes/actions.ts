@@ -66,7 +66,8 @@ export async function inviteCliente(formData: FormData) {
   })
 
   if (error) {
-    redirect(`/clientes/${client_id}?error=` + encodeURIComponent(error.message))
+    console.error('inviteCliente error:', JSON.stringify(error))
+    redirect(`/clientes/${client_id}?error=` + encodeURIComponent(JSON.stringify(error)))
   }
 
   await admin.from('profiles').upsert({
