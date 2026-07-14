@@ -11,18 +11,11 @@ export async function createHoja(formData: FormData) {
   const supabase = await createClient()
   const { taller_id } = await requireWorkerOrAbove()
 
-  const year = new Date().getFullYear()
-  const { count } = await supabase
-    .from('hojas_viajeras')
-    .select('*', { count: 'exact', head: true })
-    .gte('created_at', `${year}-01-01`)
-
-  const folio = `HV-${year}-${String((count ?? 0) + 1).padStart(3, '0')}`
   const clientId = (formData.get('client_id') as string) || null
   const estimatedEnd = (formData.get('estimated_end_date') as string) || null
 
+  // folio lo asigna el trigger assign_folio (migración 007)
   await supabase.from('hojas_viajeras').insert({
-    folio,
     product_name: formData.get('product_name') as string,
     quantity: Number(formData.get('quantity')) || 1,
     client_id: clientId,

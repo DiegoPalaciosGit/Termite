@@ -16,16 +16,8 @@ export async function crearSolicitud(formData: FormData) {
 
   const taller_id = await getTallerId()
 
-  const year = new Date().getFullYear()
-  const { count } = await supabase
-    .from('hojas_viajeras')
-    .select('*', { count: 'exact', head: true })
-    .gte('created_at', `${year}-01-01`)
-
-  const folio = `HV-${year}-${String((count ?? 0) + 1).padStart(3, '0')}`
-
+  // folio lo asigna el trigger assign_folio (migración 007)
   await supabase.from('hojas_viajeras').insert({
-    folio,
     product_name: formData.get('product_name') as string,
     quantity: Number(formData.get('quantity')) || 1,
     client_id: cliente?.id ?? null,
