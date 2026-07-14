@@ -53,6 +53,34 @@ export async function updateCliente(formData: FormData) {
   redirect(`/clientes/${id}`)
 }
 
+export async function deleteCliente(formData: FormData) {
+  await requireAdmin()
+  const supabase = await createClient()
+  const id = formData.get('client_id') as string
+
+  const { count } = await supabase
+    .from('hojas_viajeras')
+    .select('*', { count: 'exact', head: true })
+    .eq('client_id', id)
+
+  if ((count ?? 0) > 0) {
+    redirect(`/clientes/${id}?error=` + encodeURIComponent(
+      `No se puede eliminar: el cliente tiene ${count} orden(es) registradas. Elimina sus hojas viajeras primero.`
+    ))
+  }
+
+  // Si tiene acceso al portal, eliminar también su cuenta de auth
+  const { data: cliente } = await supabase.from('clients').select('user_id').eq('id', id).single()
+  if (cliente?.user_id) {
+    const admin = createAdminClient()
+    await admin.auth.admin.deleteUser(cliente.user_id)
+  }
+
+  await supabase.from('clients').delete().eq('id', id)
+  revalidatePath('/clientes')
+  redirect('/clientes')
+}
+
 export async function inviteCliente(formData: FormData) {
   const client_id = formData.get('client_id') as string
   const email = (formData.get('email') as string).trim()

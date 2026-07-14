@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { inviteCliente } from '../actions'
+import DeleteClienteButton from './DeleteClienteButton'
 
 const inputCls = 'flex-1 border border-warm bg-white text-bark text-sm px-3 py-2.5 focus:outline-none focus:border-terra transition-colors placeholder:text-dust'
 
@@ -55,9 +56,12 @@ export default async function ClienteDetailPage({
             </div>
           </div>
         </div>
-        <Link href={`/clientes/${id}/editar`} className="text-xs text-dust hover:text-bark uppercase tracking-widest shrink-0 transition-colors">
-          Editar
-        </Link>
+        <div className="flex items-center gap-4 shrink-0">
+          <Link href={`/clientes/${id}/editar`} className="text-xs text-dust hover:text-bark uppercase tracking-widest transition-colors">
+            Editar
+          </Link>
+          <DeleteClienteButton clientId={id} name={cliente.name} />
+        </div>
       </div>
 
       {cliente.notes && (
