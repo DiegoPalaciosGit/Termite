@@ -36,12 +36,12 @@ export async function proxy(request: NextRequest) {
 
   // Con sesión en página pública → redirect según rol
   if (user && isPublic) {
-    const dest = role === 'cliente' ? '/portal' : '/dashboard'
+    const dest = role === 'client' ? '/portal' : '/dashboard'
     return NextResponse.redirect(new URL(dest, request.url))
   }
 
   // Cliente solo puede acceder a /portal/*
-  if (user && role === 'cliente' && !path.startsWith('/portal')) {
+  if (user && role === 'client' && !path.startsWith('/portal')) {
     return NextResponse.redirect(new URL('/portal', request.url))
   }
 
