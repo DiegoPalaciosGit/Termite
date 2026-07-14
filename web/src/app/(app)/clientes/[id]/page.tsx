@@ -56,7 +56,7 @@ export default async function ClienteDetailPage({
             </div>
           </div>
         </div>
-        <div className="flex items-center gap-4 shrink-0">
+        <div className="flex items-center gap-4 shrink-0 self-center">
           <Link href={`/clientes/${id}/editar`} className="text-xs text-dust hover:text-bark uppercase tracking-widest transition-colors">
             Editar
           </Link>
