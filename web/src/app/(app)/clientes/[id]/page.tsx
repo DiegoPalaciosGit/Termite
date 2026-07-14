@@ -6,11 +6,13 @@ import { inviteCliente } from '../actions'
 const inputCls = 'flex-1 border border-warm bg-white text-bark text-sm px-3 py-2.5 focus:outline-none focus:border-terra transition-colors placeholder:text-dust'
 
 const STATUS_BADGE: Record<string, string> = {
+  pendiente_aprobacion: 'bg-amber-light text-amber',
   en_proceso: 'bg-terra-light text-terra-text',
   retrabajo:  'bg-rust-light text-rust',
   terminado:  'bg-pine-light text-pine',
 }
 const STATUS_LABEL: Record<string, string> = {
+  pendiente_aprobacion: 'Pendiente aprobación',
   en_proceso: 'En proceso',
   retrabajo:  'Retrabajo',
   terminado:  'Terminado',

@@ -1,7 +1,8 @@
 import { createClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { updateStatus, addStage, deleteStage, aprobarHoja } from '../actions'
+import { updateStatus, deleteStage, aprobarHoja } from '../actions'
+import StageForm from './StageForm'
 
 const STAGES: Record<string, string> = {
   corte:     'Corte (CNC / Sierra)',
@@ -46,8 +47,6 @@ type Stage = {
   duration_minutes: number | null
   notes: string | null
 }
-
-const inputCls = 'w-full border border-warm bg-white text-bark text-sm px-3 py-2.5 focus:outline-none focus:border-terra transition-colors placeholder:text-dust'
 
 export default async function HojaDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -194,40 +193,12 @@ export default async function HojaDetailPage({ params }: { params: Promise<{ id:
 
           <div className="bg-white border border-warm p-4">
             <p className="text-xs font-medium text-dust uppercase tracking-widest mb-4">Registrar etapa de producción</p>
-            <form action={addStage} className="space-y-4">
-              <input type="hidden" name="hoja_id" value={id} />
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs text-umber font-medium mb-2 uppercase tracking-widest">Etapa *</label>
-                  <select name="stage" required className={inputCls}>
-                    {Object.entries(STAGES).map(([key, label]) => (
-                      <option key={key} value={key}>{label}</option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-xs text-umber font-medium mb-2 uppercase tracking-widest">Trabajador</label>
-                  <input name="worker_name" placeholder="Nombre del trabajador" className={inputCls} />
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs text-umber font-medium mb-2 uppercase tracking-widest">Inicio</label>
-                  <input name="started_at" type="datetime-local" className={inputCls} />
-                </div>
-                <div>
-                  <label className="block text-xs text-umber font-medium mb-2 uppercase tracking-widest">Fin</label>
-                  <input name="finished_at" type="datetime-local" className={inputCls} />
-                </div>
-              </div>
-              <div>
-                <label className="block text-xs text-umber font-medium mb-2 uppercase tracking-widest">Notas</label>
-                <input name="notes" placeholder="Observaciones opcionales" className={inputCls} />
-              </div>
-              <button type="submit" className="w-full bg-terra hover:bg-terra-dark text-white font-medium py-2.5 px-4 text-sm tracking-wide transition-colors">
-                Guardar etapa
-              </button>
-            </form>
+            <StageForm
+              hojaId={id}
+              estimatedEndDate={hoja.estimated_end_date}
+              existingStages={stageList.map(s => s.stage)}
+              stages={STAGES}
+            />
           </div>
         </>
       )}
