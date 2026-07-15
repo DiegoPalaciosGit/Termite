@@ -11,6 +11,7 @@ export const metadata: Metadata = {
     title: 'Termite',
   },
   icons: {
+    icon: [{ url: '/termita.svg', type: 'image/svg+xml' }],
     apple: [{ url: '/termita.png', sizes: '180x180', type: 'image/png' }],
   },
 };
