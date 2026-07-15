@@ -1,6 +1,8 @@
 import { getProfile } from '@/lib/supabase/taller'
+import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { logout } from '@/app/login/actions'
+import PortalNav from './PortalNav'
 
 function TermiteLogo() {
   return (
@@ -18,6 +20,11 @@ export default async function PortalLayout({ children }: { children: React.React
   }
 
   if (profile.role !== 'client') redirect('/dashboard')
+
+  const supabase = await createClient()
+  const { count: notifCount } = await supabase
+    .from('client_notifications')
+    .select('*', { count: 'exact', head: true })
 
   return (
     <div className="min-h-dvh bg-linen">
@@ -38,6 +45,7 @@ export default async function PortalLayout({ children }: { children: React.React
           </button>
         </form>
       </header>
+      <PortalNav notifCount={notifCount ?? 0} />
       <main className="max-w-2xl mx-auto px-4 py-6">
         {children}
       </main>
