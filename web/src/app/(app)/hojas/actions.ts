@@ -119,6 +119,17 @@ export async function addStage(formData: FormData) {
   redirect(`/hojas/${hojaId}`)
 }
 
+export async function deleteHoja(formData: FormData) {
+  const supabase = await createClient()
+  const id = formData.get('id') as string
+
+  await supabase.from('hoja_stages').delete().eq('hoja_viajera_id', id)
+  await supabase.from('hojas_viajeras').delete().eq('id', id)
+
+  revalidatePath('/hojas')
+  redirect('/hojas')
+}
+
 export async function deleteStage(formData: FormData) {
   const supabase = await createClient()
   const hojaId = formData.get('hoja_id') as string

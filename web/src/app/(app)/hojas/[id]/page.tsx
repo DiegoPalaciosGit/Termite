@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { updateStatus, deleteStage, aprobarHoja } from '../actions'
 import StageForm from './StageForm'
+import DeleteHojaButton from './DeleteHojaButton'
 
 const STAGES: Record<string, string> = {
   corte:     'Corte (CNC / Sierra)',
@@ -85,9 +86,12 @@ export default async function HojaDetailPage({ params }: { params: Promise<{ id:
             )}
           </div>
         </div>
-        <Link href={`/hojas/${id}/editar`} className="text-xs text-dust hover:text-bark uppercase tracking-widest shrink-0 mt-1 transition-colors">
-          Editar
-        </Link>
+        <div className="flex items-center gap-4 shrink-0 mt-1">
+          <Link href={`/hojas/${id}/editar`} className="text-xs text-dust hover:text-bark uppercase tracking-widest transition-colors">
+            Editar
+          </Link>
+          <DeleteHojaButton hojaId={id} folio={hoja.folio} />
+        </div>
       </div>
 
       {hoja.notes && (
