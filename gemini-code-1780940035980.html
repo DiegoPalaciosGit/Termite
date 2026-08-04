@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recomendación de Stack - Termite</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 30px 20px;
+            background-color: #f9f9f9;
+        }
+        h1 {
+            color: #111;
+            border-bottom: 2px solid #eaeaea;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        h2 {
+            color: #222;
+            margin-top: 0;
+            font-size: 1.4em;
+        }
+        p {
+            margin-bottom: 15px;
+        }
+        .stack-card {
+            background: #fff;
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border-left: 5px solid #000;
+        }
+        .stack-card.react {
+            border-left-color: #0070f3; /* Next.js/React blue */
+        }
+        .stack-card.laravel {
+            border-left-color: #ff2d20; /* Laravel red */
+        }
+        ul {
+            padding-left: 20px;
+            margin-top: 15px;
+        }
+        li {
+            margin-bottom: 12px;
+        }
+        .note {
+            background: #eef2f5;
+            padding: 20px;
+            border-radius: 6px;
+            font-size: 0.95em;
+            margin-top: 30px;
+            border-left: 5px solid #6c757d;
+        }
+        strong {
+            color: #111;
+        }
+        code {
+            background-color: #f1f1f1;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Estrategia de Stack para Termite</h1>
+    <p>Para Termite, el stack debe girar en torno a <strong>Supabase</strong> y facilitar tanto un entorno "mobile-first" como el procesamiento automatizado de correos y facturas.</p>
+
+    <div class="stack-card react">
+        <h2>Opción 1: Next.js / React + Supabase</h2>
+        <p><strong>El Enfoque Nativo y Serverless:</strong> Esta es la opción más directa si quieres aprovechar todo el poder de "Backend as a Service".</p>
+        <ul>
+            <li><strong>Integración Perfecta:</strong> El documento exige usar Supabase desde el día 1, aprovechando <code>auth.users</code> y configurando políticas de seguridad RLS restrictivas para los perfiles <code>admin</code>, <code>worker</code> y <code>client</code>. Next.js y React tienen la integración más fluida y documentada con el SDK de Supabase para manejar esto de forma nativa.</li>
+            <li><strong>Mobile-First y QR:</strong> React facilita enormemente la creación de una PWA (Progressive Web App) rápida y responsiva para que Carlos escanee los códigos QR del inventario directamente con la cámara de su celular.</li>
+            <li><strong>Despliegue Rápido:</strong> Este entorno está optimizado para subirse a Vercel, logrando despliegues continuos sin fricción.</li>
+        </ul>
+    </div>
+
+    <div class="stack-card laravel">
+        <h2>Opción 2: PHP (Laravel) + Vue / Livewire</h2>
+        <p><strong>El Enfoque de Procesamiento Pesado:</strong> Esta opción es ideal si priorizas la robustez del backend para las integraciones externas.</p>
+        <ul>
+            <li><strong>Manejo del Lector SAT (IMAP/XML):</strong> El Módulo F3 requiere conectarse vía IMAP a Gmail, filtrar correos, extraer archivos adjuntos y leer las etiquetas <code>&lt;cfdi:Concepto&gt;</code> de las facturas XML. Laravel es excepcionalmente superior para este tipo de tareas, contando con librerías muy maduras para manejar correos y procesamiento de colas en segundo plano.</li>
+            <li><strong>Lógica de Negocio Centralizada:</strong> La automatización de las fórmulas de reabastecimiento (Punto de Pedido) y la evaluación del semáforo de margen de rentabilidad pueden orquestarse limpiamente en los controladores del servidor. En este escenario, Supabase actuaría puramente como tu base de datos PostgreSQL.</li>
+        </ul>
+    </div>
+
+    <div class="note">
+        <strong>El Entorno de Desarrollo Ideal:</strong><br>
+        Independientemente del camino que elijas, el estándar para arrancar este MVP es mantener un control de versiones limpio en GitHub y apoyarse fuertemente en un editor con inteligencia artificial como Cursor. Esto te permitirá generar rápidamente las políticas RLS de Supabase, las consultas SQL complejas o los scripts de extracción del XML casi de forma instantánea.
+    </div>
+
+</body>
+</html>
